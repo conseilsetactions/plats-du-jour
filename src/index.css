@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+
+  /* Palette de la maquette Claude Design (Main.dc.html) */
+  --color-background: #f8f8f8;
+  --color-foreground: #1a1a1a;
+  --color-card: #ffffff;
+  --color-card-foreground: #1a1a1a;
+  --color-primary: #1a1a1a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #fafafa;
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: #fafafa;
+  --color-muted-foreground: #666666;
+  --color-subtle: #999999;
+  --color-border: #e0e0e0;
+  --color-input: #dddddd;
+
+  /* Clay */
+  --color-accent: #d97757;
+  --color-accent-foreground: #ffffff;
+  --color-accent-strong: #b85a3f;
+  --color-accent-soft: #fbefea; /* fond clay très clair (landing pro) */
+
+  /* Ouvert / fermé (jours d'ouverture) */
+  --color-open: #2e7d32;
+  --color-open-soft: #e8f5e9;
+  --color-closed: #c62828;
+  --color-closed-soft: #fdecea;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Plan des plats (version C) : repères avec le prix, bulle d'un établissement */
+.pdj-pin-anchor {
+  background: none;
+  border: none;
+}
+.pdj-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: inline-block;
+  white-space: nowrap;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-accent);
+  background: var(--color-card);
+  color: var(--color-accent-strong);
+  font: 700 12px/1.3 var(--font-sans);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.18);
+  transition: transform 0.15s;
+}
+.pdj-pin.is-active {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+  transform: translate(-50%, -100%) scale(1.15);
+}
+.pdj-popup {
+  min-width: 190px;
+  font-family: var(--font-sans);
+}
+.pdj-popup-title {
+  margin: 0 0 6px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--color-foreground);
+}
+.pdj-popup-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  background: none;
+  font: 13px var(--font-sans);
+  color: var(--color-foreground);
+  text-align: left;
+  cursor: pointer;
+}
+.pdj-popup-row:hover span {
+  color: var(--color-accent-strong);
+  text-decoration: underline;
+}
+.pdj-popup-row strong {
+  color: var(--color-accent);
+}
+
+/* Prevent zoom on input focus for mobile */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
