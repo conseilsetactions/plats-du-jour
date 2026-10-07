@@ -102,12 +102,12 @@
 3. « Sans engagement » à l'étape 1
 4. Mesure du tunnel dans l'admin
 
-### Priorité 2 — avant le 14 octobre (proposé, à valider)
-1. Renommer l'étape « Paiement » en « Activation (0 €) »
-2. Aide « Où trouver mon SIRET ? » plus visible
-3. SMS du code un peu plus chaleureux
-4. **Outil de mesure réel** pour suivre la campagne (sinon impossible de savoir si l'objectif des 15 % est atteint)
-5. Harmoniser les pages /pro A et B avec le même message (« environ 3 mois pour voir les résultats »)
+### Priorité 2 — fait le 2026-10-07
+1. ✅ Étape 5 renommée « Activation (0 €) » dans la barre d'étapes
+2. ✅ Encadré « Où trouver mon SIRET ? » (factures, Kbis / avis Insee, Annuaire des entreprises) à l'étape 4
+3. ✅ SMS du code : « Plats du Jour : bienvenue ! Votre code de vérification est 123456. Ne le communiquez à personne. »
+4. ✅ **Outil de mesure réel prêt : Umami** (sans cookie, donc sans bandeau de consentement). Événements envoyés : chaque étape du tunnel (`inscription-formule` … `inscription-termine`), les A/B tests (`landing-pro-…`, `liste-…`) et les pages vues. **Reste à faire par Christine :** créer le compte Umami et donner l'identifiant du site (voir § 7)
+5. ✅ Message harmonisé « environ 3 mois » : écran avant la carte, encart « Pourquoi 6 mois gratuits ? » des pages /pro A et B, page « Bien démarrer »
 
 ### Priorité 3 — après la campagne
 1. **A/B test du tunnel** : A sans l'écran d'explication, B avec. Mesure : abandon à l'étape 5 et taux de complétion. N'a de sens qu'avec un outil de mesure réel et assez d'inscriptions (plusieurs dizaines par version)
@@ -129,3 +129,14 @@
 Parcours complet réalisé de bout en bout sur mobile (390 px), sans blocage : formule → portable + code → mot de passe → SIRET de test → écran « 6 mois gratuits » → carte → espace pro. Toutes les étapes sont bien comptées dans l'admin.
 
 Non fait : capture GIF du parcours (outil non disponible dans ce navigateur) ; chronométrage réel (à faire avec un vrai restaurateur).
+
+---
+
+## 7. Activer la mesure réelle (Umami)
+
+1. Créer un compte gratuit sur umami.is (offre « Hobby » gratuite, à vérifier au moment de l'inscription)
+2. Ajouter le site (son adresse Vercel), puis copier son **Website ID**
+3. Le coller dans `.env.production` : `VITE_UMAMI_WEBSITE_ID=…`, puis republier sur Vercel
+4. Dans Umami, créer un rapport **Funnel** (entonnoir) avec les événements `inscription-formule` → `inscription-portable` → `inscription-code` → `inscription-mot_de_passe` → `inscription-etablissement` → `inscription-paiement_intro` → `inscription-paiement` → `inscription-termine`
+
+Abandon au paiement = 1 − (`inscription-termine` ÷ `inscription-paiement_intro`), objectif < 15 %

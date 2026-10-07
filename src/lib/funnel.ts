@@ -1,6 +1,7 @@
 // Mesure du tunnel d'inscription pro (SIMULÉ : stocké dans le navigateur, lu par /admin).
 // Objectif : savoir à quelle étape les restaurateurs abandonnent (cible : moins de 15 % d'abandon au paiement).
-// En vrai : un outil de mesure côté serveur pour agréger tous les visiteurs.
+// Mesure réelle de tous les visiteurs : Umami (src/lib/analytics.ts), dès qu'il est configuré.
+import { track } from '@/lib/analytics';
 
 export const FUNNEL_STEPS = [
   { id: 'formule', label: '1. Formule' },
@@ -9,7 +10,7 @@ export const FUNNEL_STEPS = [
   { id: 'mot_de_passe', label: '3. Mot de passe' },
   { id: 'etablissement', label: '4. Établissement' },
   { id: 'paiement_intro', label: '5. Les 6 mois gratuits' },
-  { id: 'paiement', label: '5. Paiement' },
+  { id: 'paiement', label: '5. Activation : carte' },
   { id: 'termine', label: 'Inscription terminée' },
 ] as const;
 
@@ -38,6 +39,7 @@ export const trackFunnel = (step: FunnelStep) => {
     if (seen.includes(step)) return;
     sessionStorage.setItem(SEEN_KEY, JSON.stringify([...seen, step]));
     localStorage.setItem(EVENTS_KEY, JSON.stringify([...getFunnelEvents(), { step, at: new Date().toISOString() }]));
+    track(`inscription-${step}`); // mesure réelle (Umami), pour le rapport « entonnoir »
   } catch {
     // stockage indisponible : mesure perdue
   }

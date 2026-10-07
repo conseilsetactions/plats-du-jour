@@ -345,19 +345,28 @@ export function CreateRestaurantForm() {
             </p>
           )}
         </div>
-        <p className="text-xs text-subtle">
-          Le SIRET permet de vérifier que votre établissement existe et de remplir son adresse
-          automatiquement. Vous le trouverez sur vos factures ou sur{' '}
-          <a
-            href="https://annuaire-entreprises.data.gouv.fr"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-accent underline"
-          >
-            l'Annuaire des entreprises
-          </a>
-          .
-        </p>
+        {/* Aide visible : c'est l'étape la plus longue du tunnel, on évite de bloquer sur le SIRET */}
+        <div className="rounded-md bg-muted p-3 text-[13px]">
+          <p className="font-semibold text-foreground">Où trouver mon SIRET ?</p>
+          <ul className="mt-1.5 list-disc space-y-0.5 pl-5 text-muted-foreground">
+            <li>Sur vos factures ou vos devis</li>
+            <li>Sur votre extrait Kbis ou votre avis de situation Insee</li>
+            <li>
+              En tapant le nom de votre établissement sur{' '}
+              <a
+                href="https://annuaire-entreprises.data.gouv.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-accent underline"
+              >
+                l'Annuaire des entreprises
+              </a>
+            </li>
+          </ul>
+          <p className="mt-1.5 text-xs text-subtle">
+            Il sert à vérifier que votre établissement existe et à remplir son adresse automatiquement
+          </p>
+        </div>
 
         {DEMO_MODE && (
           <div className="rounded-md border border-dashed border-accent/60 p-3">

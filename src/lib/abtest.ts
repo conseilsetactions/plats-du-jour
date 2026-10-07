@@ -1,6 +1,8 @@
 // A/B test de la landing pro (SIMULÉ : mesures stockées dans le navigateur, lues par /admin).
 // En vrai : un outil de mesure côté serveur (ou un service d'analytics) pour agréger tous les visiteurs.
 
+import { track } from '@/lib/analytics';
+
 export type Variant = 'a' | 'b';
 
 export const VARIANTS: Record<Variant, string> = {
@@ -63,6 +65,7 @@ export const trackAb = (type: AbEventType, variant: Variant | null = assignedVar
   try {
     const events = [...getAbEvents(), { type, variant, at: new Date().toISOString() }];
     localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
+    track(`landing-pro-${type}`, { version: variant }); // mesure réelle (Umami)
   } catch {
     // stockage indisponible : mesure perdue
   }

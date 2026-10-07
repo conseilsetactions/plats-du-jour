@@ -2,6 +2,8 @@
 // A = ardoise (tableau), C = liste + plan. Seuls les visiteurs avec le GPS activé participent :
 // sans GPS, on affiche toujours le plan (C), le seul moyen de situer les établissements.
 
+import { track } from '@/lib/analytics';
+
 export type ListVariant = 'a' | 'c';
 
 export const LIST_VARIANTS: Record<ListVariant, string> = {
@@ -54,6 +56,7 @@ export const getListEvents = (): ListEvent[] => {
 export const trackList = (type: ListEventType, variant: ListVariant) => {
   try {
     localStorage.setItem(EVENTS_KEY, JSON.stringify([...getListEvents(), { type, variant, at: new Date().toISOString() }]));
+    track(`liste-${type}`, { version: variant }); // mesure réelle (Umami)
   } catch {
     // stockage indisponible : mesure perdue
   }

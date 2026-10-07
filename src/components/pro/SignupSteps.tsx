@@ -1,7 +1,7 @@
 import { ChevronLeft } from 'lucide-react';
 
 /** Les étapes de l'inscription pro, dans l'ordre. */
-export const SIGNUP_STEPS = ['Formule', 'Portable', 'Mot de passe', 'Établissement', 'Paiement'] as const;
+export const SIGNUP_STEPS = ['Formule', 'Portable', 'Mot de passe', 'Établissement', 'Activation (0 €)'] as const;
 export type SignupStep = (typeof SIGNUP_STEPS)[number];
 
 /** Barre de progression de l'inscription : « Étape 2 sur 5 · Portable ». */

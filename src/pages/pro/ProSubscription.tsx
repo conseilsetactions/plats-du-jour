@@ -106,7 +106,7 @@ export default function ProSubscription() {
       <Header subtitle="Espace pro" />
 
       <main className={`${pageMain} pb-10`}>
-        <SignupSteps current="Paiement" onBack={introSeen ? () => setIntroSeen(false) : undefined} />
+        <SignupSteps current="Activation (0 €)" onBack={introSeen ? () => setIntroSeen(false) : undefined} />
         {!introSeen ? (
           <PaymentIntro chargeDate={longDate(chargeDate)} onContinue={() => setIntroSeen(true)} />
         ) : (

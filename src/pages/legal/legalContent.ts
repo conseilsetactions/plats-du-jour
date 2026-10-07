@@ -88,7 +88,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
           "Vous n'avez pas besoin de créer de compte.",
           "Position GPS : uniquement si vous activez le GPS, pour calculer les distances. Elle est conservée sur votre appareil et n'est pas enregistrée par nos serveurs [à compléter : à confirmer dans la version finale].",
           'Ville et quartier choisis : conservés sur votre appareil pour vous éviter de les ressaisir.',
-          "Mesure d'audience : [à compléter : outil retenu, et recueil du consentement si des traceurs non indispensables sont utilisés].",
+          "Mesure d'audience : nous utilisons Umami, un outil de statistiques sans cookie qui ne collecte aucune donnée permettant de vous identifier (pages vues, étapes de l'inscription, de façon anonyme et globale). Aucun bandeau de consentement n'est donc nécessaire [à compléter : à confirmer par un juriste].",
         ],
       },
       {
@@ -118,6 +118,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
           "Vos données ne sont jamais vendues. Elles sont accessibles à l'équipe de Plats du Jour et à nos prestataires techniques, dans la limite de leur mission :",
           'Hébergement : [à compléter : hébergeur et base de données retenus].',
           'Paiement : Stripe Payments Europe Ltd.',
+          "Mesure d'audience : Umami (Umami Software, Inc.), statistiques anonymes sans cookie [à compléter : à vérifier, localisation des serveurs].",
           'Envoi des SMS : [à compléter : prestataire].',
           'Envoi des e-mails : [à compléter : prestataire].',
           "Lecture des photos d'ardoise : [à compléter : prestataire d'intelligence artificielle].",

@@ -51,7 +51,7 @@ export type ReminderTone = 'new' | 'top' | 'regular' | 'low';
 export const SMS = {
   /** Création de compte : vérification du portable (une seule fois). */
   signupCode: (code: string) =>
-    checkSingleSms(`Plats du Jour : votre code d'inscription est ${code}. Ne le communiquez à personne.`),
+    checkSingleSms(`Plats du Jour : bienvenue ! Votre code de vérification est ${code}. Ne le communiquez à personne.`),
 
   /** « Mot de passe oublié ». */
   resetCode: (code: string) =>

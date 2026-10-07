@@ -94,7 +94,7 @@ export default function ProGettingStarted() {
           </p>
           <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-card/80">
             Les premières semaines, vous publiez sans voir tout de suite la différence. C'est normal : chaque
-            plat publié prépare la suite. Il faut jouer le jeu
+            plat publié prépare la suite. Comptez en général environ 3 mois pour voir les premiers résultats
           </p>
         </section>
 

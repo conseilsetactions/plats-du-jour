@@ -116,7 +116,7 @@ export function GettingStartedTeaser() {
         <span className="flex-1">
           <span className="block text-[15px] font-semibold text-foreground">Pourquoi {FREE_MONTHS} mois gratuits ?</span>
           <span className="text-[13px] text-muted-foreground">
-            Il faut bien commencer quelque part : découvrez comment on construit ensemble
+            Vos clients ont besoin de temps pour vous découvrir : comptez en général environ 3 mois en publiant régulièrement
           </span>
         </span>
         <ChevronRight className="h-5 w-5 shrink-0 text-accent" />
