@@ -9,13 +9,13 @@ import {
   type Segment,
 } from '@/lib/activity';
 import { EMAILS } from '@/lib/email';
-import { isOpenOn } from '@/lib/openDays';
+import { isFirstOpenDayOfWeek, isOpenOn } from '@/lib/openDays';
 import { proStore, type AdminAction, type ProDbSnapshot, type Restaurant } from '@/lib/proStore';
 import { SMS } from '@/lib/sms';
 import { dateKey, formatPhone } from '@/utils/format';
 
 const ACTION_LABELS: Record<AdminAction['type'], string> = {
-  sms_daily: 'SMS de rappel du jour',
+  sms_weekly: 'SMS de rappel de la semaine',
   email_congrats: 'E-mail de félicitations',
 };
 
@@ -24,6 +24,8 @@ interface Row {
   activity: Activity;
   publishedToday: boolean;
   openToday: boolean;
+  /** Aujourd'hui = 1er jour d'ouverture de la semaine (jour du SMS de rappel). */
+  reminderDay: boolean;
 }
 
 const longDate = (date: Date) =>
@@ -80,7 +82,8 @@ function AutoMessage({
 
 /**
  * Suivi des publications sur 4 semaines :
- * - tous : SMS de rappel les jours ouvrés à 10h30 si le plat du jour n'est pas publié (ton selon la catégorie) ;
+ * - tous : SMS de rappel UNE fois par semaine, le 1er jour d'ouverture à 10h30, si le plat du jour n'est pas publié
+ *   (ton selon la catégorie) ;
  * - meilleurs publiants : e-mail de félicitations le vendredi à 15h ;
  * - à relancer : un appel, numéro affiché.
  * Envois SIMULÉS : en vrai, tâches planifiées côté serveur.
@@ -97,12 +100,13 @@ export default function ActivitySection({ db, now }: { db: ProDbSnapshot; now: D
       activity: getActivity(db, restaurant, now),
       publishedToday: db.plats.some((p) => p.restaurantId === restaurant.id && p.date === today),
       openToday: isOpenOn(restaurant, now),
+      reminderDay: isFirstOpenDayOfWeek(restaurant, now),
     }))
     .sort((a, b) => b.activity.rate - a.activity.rate);
 
   const inSegment = rows.filter((row) => row.activity.segment === segment);
-  // Destinataires du SMS du jour : ouverts aujourd'hui et pas encore publié
-  const notPublished = inSegment.filter((row) => row.openToday && !row.publishedToday);
+  // Destinataires du SMS de la semaine : c'est leur 1er jour d'ouverture et le plat n'est pas encore publié
+  const notPublished = inSegment.filter((row) => row.reminderDay && !row.publishedToday);
   const isWeekday = now.getDay() >= 1 && now.getDay() <= 5;
   const historyOf = (id: string) => (db.adminActions ?? []).filter((a) => a.restaurantId === id);
 
@@ -136,16 +140,16 @@ export default function ActivitySection({ db, now }: { db: ProDbSnapshot; now: D
         {SEGMENTS[segment].hint}, sur les 4 dernières semaines
       </p>
 
-      {/* SMS quotidien (toutes catégories), ton adapté */}
+      {/* SMS hebdomadaire (toutes catégories), ton adapté */}
       <AutoMessage
         key={`sms-${segment}`}
         icon={MessageSquareText}
-        title={`SMS de rappel · ${FOLLOW_UP.dailySms.label}`}
-        next={nextOccurrence(now, FOLLOW_UP.dailySms.hour, FOLLOW_UP.dailySms.minute)}
-        note="Seulement si l'établissement est ouvert et que le plat du jour n'est pas encore publié"
+        title={`SMS de rappel · ${FOLLOW_UP.weeklySms.label}`}
+        next={nextOccurrence(now, FOLLOW_UP.weeklySms.hour, FOLLOW_UP.weeklySms.minute)}
+        note="Un seul SMS par semaine et par établissement, seulement si le plat du jour n'est pas encore publié"
         recipients={isWeekday ? notPublished.length : 0}
-        preview={SMS.dailyReminder(segment)}
-        onSimulate={() => proStore.logFollowUp(notPublished.map((row) => row.restaurant.id), 'sms_daily')}
+        preview={SMS.weeklyReminder(segment)}
+        onSimulate={() => proStore.logFollowUp(notPublished.map((row) => row.restaurant.id), 'sms_weekly')}
       />
 
       {/* E-mail du vendredi (meilleurs publiants) */}
@@ -214,7 +218,7 @@ export default function ActivitySection({ db, now }: { db: ProDbSnapshot; now: D
                   <ul className="mt-2 space-y-0.5 border-t border-border pt-2 text-[11px] text-muted-foreground">
                     {history.slice(0, 3).map((action) => (
                       <li key={action.id}>
-                        {new Date(action.at).toLocaleDateString('fr-FR')} · {ACTION_LABELS[action.type]}
+                        {new Date(action.at).toLocaleDateString('fr-FR')} · {ACTION_LABELS[action.type] ?? 'SMS de rappel'}
                       </li>
                     ))}
                   </ul>

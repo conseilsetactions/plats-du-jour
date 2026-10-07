@@ -107,7 +107,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
         paragraphs: [
           "Fournir le service et gérer votre compte (exécution du contrat) : publication des plats, connexion, équipe.",
           "Facturer l'abonnement et respecter nos obligations comptables (exécution du contrat, obligation légale).",
-          `Vous envoyer des messages de service : un SMS de rappel les jours d'ouverture à 10h30 si votre plat du jour n'est pas encore publié, des e-mails (fin de la période gratuite, factures, félicitations). [à compléter : base légale à valider — exécution du contrat ou intérêt légitime, avec possibilité de désactiver les rappels].`,
+          `Vous envoyer des messages de service : un SMS de rappel une fois par semaine (le 1er jour d'ouverture à 10h30) si votre plat du jour n'est pas encore publié, des e-mails (fin de la période gratuite, factures, félicitations). [à compléter : base légale à valider — exécution du contrat ou intérêt légitime, avec possibilité de désactiver les rappels].`,
           "Améliorer la plateforme et accompagner les établissements (intérêt légitime) : statistiques de publication, appels d'accompagnement, tests de pages.",
           "Assistance : un administrateur de Plats du Jour peut consulter votre espace pro pour vous aider (« voir en tant que ») ; chaque accès est enregistré.",
         ],

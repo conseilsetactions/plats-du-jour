@@ -42,10 +42,10 @@ export const invitationLink = (code: string) => `${window.location.origin}/i/${c
 /** Lien vers la page « Pourquoi continuer » (SMS automatiques de la semaine). */
 export const keepGoingLink = () => `${window.location.origin}/pro/continuer`;
 
-/** Lien vers l'espace pro (rappel quotidien). */
+/** Lien vers l'espace pro (rappel de la semaine). */
 export const spaceLink = () => `${window.location.origin}/pro/espace`;
 
-/** Ton du rappel quotidien selon la régularité du restaurateur (voir activity.ts). */
+/** Ton du rappel de la semaine selon la régularité du restaurateur (voir activity.ts). */
 export type ReminderTone = 'new' | 'top' | 'regular' | 'low';
 
 export const SMS = {
@@ -60,16 +60,17 @@ export const SMS = {
     ),
 
   /**
-   * Automatique, jours ouvrés à 10h30, au numéro choisi pour le rappel (getReminderPhone :
-   * le propriétaire par défaut, ou un membre de l'équipe), SEULEMENT si le plat du jour
-   * n'est pas encore publié. Le ton s'adapte à la régularité du restaurateur.
+   * Automatique, UNE FOIS PAR SEMAINE : le 1er jour d'ouverture de la semaine à 10h30, au numéro
+   * choisi pour le rappel (getReminderPhone : le propriétaire par défaut, ou un membre de l'équipe),
+   * SEULEMENT si le plat du jour n'est pas encore publié. Le ton s'adapte à la régularité.
+   * Objectif : limiter le coût des SMS (au plus ~4 par mois et par établissement).
    */
-  dailyReminder: (tone: ReminderTone) => {
+  weeklyReminder: (tone: ReminderTone) => {
     const texts: Record<ReminderTone, string> = {
-      new: `Plats du Jour : publiez votre plat du jour avant 11h et les clients de votre quartier le verront dès ce midi ! ${spaceLink()}`,
-      top: `Plats du Jour : votre plat du jour n'est pas encore en ligne. Vos habitués vous attendent, publiez-le avant 11h : ${spaceLink()}`,
-      regular: `Plats du Jour : n'oubliez pas votre plat du jour ! C'est important pour rester visible dans votre quartier : ${spaceLink()}`,
-      low: `Plats du Jour : vos clients ne voient pas votre plat du jour. Publiez-le avant 11h, c'est important : ${spaceLink()}`,
+      new: `Plats du Jour : nouvelle semaine ! Publiez vos plats du jour en une fois, avant 11h : ${spaceLink()}`,
+      top: `Plats du Jour : vos habitués vous attendent ! Publiez vos plats de la semaine avant 11h : ${spaceLink()}`,
+      regular: `Plats du Jour : nouvelle semaine ! Publiez vos plats du jour pour rester visible : ${spaceLink()}`,
+      low: `Plats du Jour : vos clients ne voient pas vos plats. Publiez votre semaine en 2 minutes : ${spaceLink()}`,
     };
     return checkSingleSms(texts[tone]);
   },

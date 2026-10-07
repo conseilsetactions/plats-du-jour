@@ -1,5 +1,5 @@
 // Jours d'ouverture d'un établissement (du lundi au vendredi : les jours où l'on publie un plat du jour).
-// Un jour fermé : pas de plat à saisir, pas de SMS de rappel, pas compté dans la régularité.
+// Un jour fermé : pas de plat à saisir, pas compté dans la régularité. Le SMS de rappel part le 1er jour d'ouverture de la semaine.
 
 export const WEEKDAYS = [
   { day: 1, short: 'Lun', long: 'lundi' },
@@ -24,3 +24,7 @@ export const formatOpenDays = (openDays: number[]) => {
   const names = WEEKDAYS.filter((w) => openDays.includes(w.day)).map((w) => w.long);
   return `Ouvert ${names.join(', ')}`;
 };
+
+/** Premier jour d'ouverture de la semaine (jour du SMS de rappel hebdomadaire) ? */
+export const isFirstOpenDayOfWeek = (restaurant: { openDays?: number[] }, date: Date) =>
+  date.getDay() === Math.min(...getOpenDays(restaurant));

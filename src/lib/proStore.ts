@@ -65,7 +65,7 @@ export interface AdminAction {
   id: string;
   at: string;
   restaurantId: string;
-  type: 'sms_daily' | 'email_congrats';
+  type: 'sms_weekly' | 'email_congrats';
 }
 
 /** E-mail envoyé à l'administrateur (SIMULÉ : enregistré ici, visible dans /admin). */
@@ -87,14 +87,14 @@ export interface Restaurant extends RestaurantProfile {
   members: string[]; // n° de portable des membres de l'équipe
   invitations?: Record<string, Invitation>; // clé : n° de portable du membre
   billing?: Billing; // absent = carte pas encore enregistrée
-  /** Numéro qui reçoit le SMS de rappel quotidien (absent = le propriétaire). */
+  /** Numéro qui reçoit le SMS de rappel de la semaine (absent = le propriétaire). */
   reminderPhone?: string;
   reminderConfirmed?: boolean; // numéro de rappel choisi explicitement
   /** Proposition « ajouter des membres de l'équipe » : nombre de « Plus tard » et connexion du dernier. */
   teamPrompt?: { dismissals: number; lastDismissedLogin: number };
 }
 
-/** Numéro qui reçoit le SMS de rappel quotidien. */
+/** Numéro qui reçoit le SMS de rappel de la semaine. */
 export const getReminderPhone = (restaurant: Restaurant) => restaurant.reminderPhone ?? restaurant.ownerPhone;
 
 /** La proposition d'équipe s'affiche à partir de la 2e connexion, au plus deux fois. */
@@ -382,7 +382,7 @@ export const proStore = {
   updateRestaurant: (changes: Partial<Pick<RestaurantProfile, 'name' | 'city' | 'quartier' | 'openDays'>>) =>
     write((db) => updateRestaurant(db, (r) => ({ ...r, ...changes }))),
 
-  // --- Équipe et rappel quotidien ---
+  // --- Équipe et rappel de la semaine ---
   /**
    * Proposer d'ajouter des membres de l'équipe ? Au propriétaire, à partir de sa 2e connexion,
    * tant qu'il n'a pas d'équipe ; « Plus tard » la repousse à la connexion suivante (2 fois au plus).
@@ -408,7 +408,7 @@ export const proStore = {
       }));
     }),
 
-  /** Choisit le numéro qui reçoit le SMS de rappel quotidien (propriétaire ou membre de l'équipe). */
+  /** Choisit le numéro qui reçoit le SMS de rappel de la semaine (propriétaire ou membre de l'équipe). */
   setReminderPhone: (phone: string) =>
     write((db) => updateRestaurant(db, (r) => ({ ...r, reminderPhone: phone === r.ownerPhone ? undefined : phone }))),
 
@@ -684,7 +684,7 @@ export const proStore = {
       return {
         ...updateRestaurant(db, (r) => {
           const { [phone]: _invitation, ...invitations } = r.invitations ?? {};
-          // Le rappel quotidien revient au propriétaire si ce membre le recevait
+          // Le rappel de la semaine revient au propriétaire si ce membre le recevait
           const reminderPhone = r.reminderPhone === phone ? undefined : r.reminderPhone;
           return { ...r, members: r.members.filter((m) => m !== phone), invitations, reminderPhone };
         }),

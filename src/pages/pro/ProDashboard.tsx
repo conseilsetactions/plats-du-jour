@@ -150,15 +150,15 @@ export default function ProDashboard() {
         </section>
       )}
 
-      {/* Une équipe mais pas encore de numéro choisi pour le rappel quotidien */}
+      {/* Une équipe mais pas encore de numéro choisi pour le rappel de la semaine */}
       {proStore.needsReminderChoice(db) && (
         <section className="border-b border-border bg-accent-soft px-4 py-4">
           <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <BellRing className="h-4 w-4 text-accent" />
-            À quel numéro envoyer les rappels quotidiens ?
+            À quel numéro envoyer le rappel de la semaine ?
           </p>
           <p className="mb-3 mt-1 text-[13px] text-muted-foreground">
-            Merci d'indiquer à quel numéro nous devons envoyer le SMS de rappel (10h30, si le plat du jour n'est pas
+            Merci d'indiquer à quel numéro nous devons envoyer le SMS de rappel (une fois par semaine, le 1er jour d'ouverture à 10h30, si le plat du jour n'est pas
             publié). Tout le monde peut quand même se connecter pour saisir les plats
           </p>
           <ReminderPhonePicker restaurant={restaurant} />

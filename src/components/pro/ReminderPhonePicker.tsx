@@ -4,7 +4,7 @@ import { formatPhone } from '@/utils/format';
 import { primaryButton } from './ui';
 
 /**
- * Choix du numéro qui reçoit le SMS de rappel quotidien (10h30, si le plat du jour n'est pas publié).
+ * Choix du numéro qui reçoit le SMS de rappel (une fois par semaine, 1er jour d'ouverture à 10h30, si le plat du jour n'est pas publié).
  * Tout le monde peut se connecter pour publier, mais un seul numéro reçoit le rappel.
  */
 export default function ReminderPhonePicker({ restaurant, onSaved }: { restaurant: Restaurant; onSaved?: () => void }) {
@@ -16,7 +16,7 @@ export default function ReminderPhonePicker({ restaurant, onSaved }: { restauran
 
   return (
     <div>
-      <div role="radiogroup" aria-label="Numéro qui reçoit le rappel quotidien" className="space-y-1.5">
+      <div role="radiogroup" aria-label="Numéro qui reçoit le rappel de la semaine" className="space-y-1.5">
         {phones.map((phone) => (
           <label
             key={phone}

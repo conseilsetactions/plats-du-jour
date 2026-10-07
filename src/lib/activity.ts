@@ -12,12 +12,12 @@ export type Segment = 'top' | 'regular' | 'low' | 'new';
 
 /**
  * Messages automatiques de suivi (en vrai : tâches planifiées côté serveur).
- * - SMS quotidien, jours ouvrés à 10h30, SEULEMENT si le plat du jour n'est pas publié ;
- *   son ton dépend de la catégorie du restaurateur (voir SMS.dailyReminder).
+ * - SMS hebdomadaire, 1er jour d'ouverture de la semaine à 10h30, SEULEMENT si le plat du jour
+ *   n'est pas publié ; son ton dépend de la catégorie du restaurateur (voir SMS.weeklyReminder).
  * - E-mail de félicitations, vendredi à 15h, aux meilleurs publiants.
  */
 export const FOLLOW_UP = {
-  dailySms: { hour: 10, minute: 30, label: 'Jours ouvrés, 10h30' },
+  weeklySms: { hour: 10, minute: 30, label: "1er jour d'ouverture de la semaine, 10h30" },
   congratsEmail: { weekday: 5, hour: 15, minute: 0, label: 'Vendredi 15h' },
 };
 

@@ -53,7 +53,7 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: 'Vais-je recevoir des SMS ?',
-    a: "Un seul rappel, les jours ouvrés à 10h30, et uniquement si votre plat du jour n'est pas encore publié. Les autres informations (factures, fin des mois offerts…) vous sont envoyées par e-mail",
+    a: "Un seul rappel par semaine, le 1er jour d'ouverture à 10h30, et uniquement si votre plat du jour n'est pas encore publié. Les autres informations (factures, fin des mois offerts…) vous sont envoyées par e-mail",
   },
 ];
 
