@@ -28,6 +28,7 @@ const DEMO_STORAGE_KEYS = [
   'pdj:ab-events',
   'pdj:ab-list-variant',
   'pdj:ab-list-events',
+  'pdj:funnel-events',
 ];
 
 const chip = 'rounded border border-input px-2 py-1.5 text-foreground hover:border-accent';

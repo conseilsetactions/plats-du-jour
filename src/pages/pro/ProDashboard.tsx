@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, type ReactNode } from 'react';
 import { Link, Navigate } from '@tanstack/react-router';
 import { BellRing, MapPin, Users } from 'lucide-react';
 import Header from '@/components/Header';
@@ -11,7 +11,8 @@ import WeekForm, { type WeekDay, type WeekFormProps } from '@/components/pro/Wee
 import { getLastVisibleDay } from '@/lib/billing';
 import { getPublishableDays, useNow } from '@/lib/clock';
 import { formatOpenDays, getOpenDays, isOpenOn } from '@/lib/openDays';
-import { isMenuPlan, PLANS } from '@/lib/plans';
+import { FREE_MONTHS, isMenuPlan, PLANS } from '@/lib/plans';
+import { trackFunnel } from '@/lib/funnel';
 import { proStore, useProDb } from '@/lib/proStore';
 import { dateKey, formatDay, formatPhone } from '@/utils/format';
 import { pageMain } from '@/components/layout';
@@ -57,6 +58,12 @@ export default function ProDashboard() {
     return { days, recentNames };
   }, [db, restaurant, now, today]);
 
+  // Mesure du tunnel d'inscription : étape « Établissement »
+  const needsRestaurant = !!db.session && !restaurant;
+  useEffect(() => {
+    if (needsRestaurant) trackFunnel('etablissement');
+  }, [needsRestaurant]);
+
   if (!db.session) return <Navigate to="/pro/connexion" search={{ mode: 'login' }} />;
 
   // Première connexion : on crée d'abord la fiche du restaurant
@@ -71,6 +78,9 @@ export default function ProDashboard() {
             Indiquez le numéro SIRET de votre établissement, nous remplissons le reste
           </p>
           <CreateRestaurantForm />
+          <p className="mt-4 rounded-md bg-accent-soft px-3 py-2.5 text-center text-[13px] text-foreground">
+            Dernière étape ensuite : enregistrer votre carte, <span className="font-semibold">sans aucun frais pendant {FREE_MONTHS} mois</span>
+          </p>
           <p className="mt-6 text-center text-[13px] text-muted-foreground">
             Connecté avec le {formatPhone(db.session)}.{' '}
             <button onClick={proStore.signOut} className="font-medium text-accent">

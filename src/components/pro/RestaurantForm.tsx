@@ -307,7 +307,7 @@ export function CreateRestaurantForm() {
 
     const { info: found } = result;
     if (!isCity(found.city) || !CITIES[found.city].postalCode.test(found.postalCode)) {
-      return setError(`Plats du Jour n'est pas encore disponible à ${found.city}.`);
+      return setError(`Plats du Jour n'est pas encore disponible à ${found.city}`);
     }
     if (proStore.isSiretTaken(found.siret)) {
       return setError(

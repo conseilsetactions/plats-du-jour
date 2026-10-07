@@ -20,6 +20,7 @@ import { inputClass } from '@/components/pro/ui';
 import ActivitySection from '@/pages/admin/ActivitySection';
 import { getActivity, type Activity as ActivityData } from '@/lib/activity';
 import { getAbEvents, resetAbTest, VARIANTS, type Variant } from '@/lib/abtest';
+import { FUNNEL_STEPS, getFunnelEvents, resetFunnel } from '@/lib/funnel';
 import { getListEvents, LIST_VARIANTS, resetListAbTest, type ListVariant } from '@/lib/listAbtest';
 import { getBillingState } from '@/lib/billing';
 import { useNow } from '@/lib/clock';
@@ -311,6 +312,7 @@ export default function Admin() {
             </Section>
             <div className="space-y-6">
               <PlansBreakdown rows={live} />
+              <FunnelSection />
               <AbTestSection />
               <ListAbTestSection />
               <AlertsSection />
@@ -407,6 +409,68 @@ function PlansBreakdown({ rows }: { rows: Row[] }) {
           );
         })}
       </div>
+    </Section>
+  );
+}
+
+/** Tunnel d'inscription : nombre de visiteurs à chaque étape et pertes (cible : < 15 % d'abandon au paiement). */
+function FunnelSection() {
+  const [events, setEvents] = useState(getFunnelEvents);
+  const counts = FUNNEL_STEPS.map(({ id, label }) => ({ id, label, n: events.filter((e) => e.step === id).length }));
+  const start = counts[0].n;
+  const paymentStart = counts.find((c) => c.id === 'paiement_intro')!.n;
+  const done = counts.find((c) => c.id === 'termine')!.n;
+  const paymentDropOff = paymentStart ? Math.round(((paymentStart - done) / paymentStart) * 100) : null;
+
+  return (
+    <Section icon={FlaskConical} title="Tunnel d'inscription pro">
+      <table className="w-full text-xs">
+        <thead className="text-left text-subtle">
+          <tr>
+            <th className="pb-1.5 font-semibold">Étape</th>
+            <th className="pb-1.5 text-right font-semibold">Visiteurs</th>
+            <th className="pb-1.5 text-right font-semibold">Du départ</th>
+            <th className="pb-1.5 text-right font-semibold">Perte</th>
+          </tr>
+        </thead>
+        <tbody>
+          {counts.map(({ id, label, n }, i) => {
+            const previous = i > 0 ? counts[i - 1].n : n;
+            const loss = previous ? Math.round(((previous - n) / previous) * 100) : 0;
+            return (
+              <tr key={id} className="border-t border-border">
+                <td className="py-1.5 pr-2 font-medium text-foreground">{label}</td>
+                <td className="py-1.5 text-right">{n}</td>
+                <td className="py-1.5 text-right">{percent(n, start)}</td>
+                <td className={`py-1.5 text-right ${loss >= 30 ? 'font-semibold text-accent-strong' : ''}`}>
+                  {i > 0 && previous ? (loss > 0 ? `−${loss} %` : '0 %') : ''}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <p className="mt-2 text-[12px] text-foreground">
+        Abandon au paiement :{' '}
+        <span className={`font-semibold ${paymentDropOff !== null && paymentDropOff >= 15 ? 'text-accent-strong' : 'text-open'}`}>
+          {paymentDropOff === null ? '—' : `${paymentDropOff} %`}
+        </span>{' '}
+        <span className="text-muted-foreground">(objectif : moins de 15 %)</span>
+      </p>
+      <p className="mt-1 text-[11px] text-muted-foreground">
+        Chaque étape est comptée une fois par visite. En démo, seules les visites de ce navigateur sont comptées
+      </p>
+      <button
+        onClick={() => {
+          if (!window.confirm('Remettre à zéro les mesures du tunnel ?')) return;
+          resetFunnel();
+          setEvents([]);
+        }}
+        className="mt-3 inline-flex items-center gap-1 rounded border border-input px-2.5 py-1.5 text-xs text-foreground hover:border-accent"
+      >
+        <RotateCcw className="h-3 w-3" />
+        Remettre à zéro
+      </button>
     </Section>
   );
 }

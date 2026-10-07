@@ -13,6 +13,7 @@ import { errorClass, inputClass, labelClass, primaryButton } from '@/components/
 import { FREE_MONTHS, type PlanId } from '@/lib/plans';
 import { LOCK_MINUTES, proStore, useProDb } from '@/lib/proStore';
 import { SMS } from '@/lib/sms';
+import { trackFunnel } from '@/lib/funnel';
 import type { LegalDocId } from '@/pages/legal/legalContent';
 import { formatPhone } from '@/utils/format';
 
@@ -31,6 +32,7 @@ const codeSchema = z.object({
 const benefits = [
   'Visible par les clients autour de vous',
   'Aucune commission sur vos ventes',
+  'Sans engagement : vous arrêtez quand vous voulez',
   'Formule modifiable à tout moment',
 ];
 
@@ -87,6 +89,12 @@ export default function ProLogin() {
   // Chaque nouvel écran s'affiche en haut
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [mode, planChosen, !!pending, pending?.verified]);
+
+  // Mesure du tunnel d'inscription : chaque écran vu
+  useEffect(() => {
+    if (mode !== 'signup') return;
+    trackFunnel(!planChosen ? 'formule' : !pending ? 'portable' : !pending.verified ? 'code' : 'mot_de_passe');
   }, [mode, planChosen, !!pending, pending?.verified]);
 
   // Déjà connecté avec un espace actif : accès direct. Une inscription inachevée ne compte pas.
