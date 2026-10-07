@@ -17,6 +17,7 @@ import {
   type City,
 } from '@/utils/mockData';
 import { errorClass, inputClass, labelClass, primaryButton, secondaryButton } from './ui';
+import { DEMO_MODE } from '@/lib/demo';
 
 const CERTIFICATION =
   'Je certifie être le propriétaire ou le représentant légal de cet établissement, ou être dûment autorisé(e) à le représenter';
@@ -287,7 +288,7 @@ export function CreateRestaurantForm() {
 
   // Démo : le module en bas à gauche remplit et vérifie un SIRET de test
   useEffect(() => {
-    if (!import.meta.env.DEV) return;
+    if (!DEMO_MODE) return;
     const onDemoSiret = (e: Event) => {
       const value = (e as CustomEvent<string>).detail;
       setSiret(value);
@@ -358,7 +359,7 @@ export function CreateRestaurantForm() {
           .
         </p>
 
-        {import.meta.env.DEV && (
+        {DEMO_MODE && (
           <div className="rounded-md border border-dashed border-accent/60 p-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-accent-strong">Démo</p>
             <p className="mt-1 text-[13px] text-muted-foreground">

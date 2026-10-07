@@ -1,15 +1,23 @@
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+/** Mode démo en ligne : le site n'est pas référencé par les moteurs de recherche. */
+const noIndexInDemo = (demo: boolean): Plugin => ({
+  name: 'pdj-noindex-demo',
+  transformIndexHtml: (html) =>
+    demo ? html.replace('</head>', '  <meta name="robots" content="noindex, nofollow" />\n  </head>') : html,
+});
+
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    noIndexInDemo(mode !== 'production' || loadEnv(mode, process.cwd(), 'VITE_').VITE_DEMO_MODE === 'true'),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon-180x180.png'],
@@ -60,4 +68,4 @@ export default defineConfig({
     port: 5173,
     strictPort: false,
   },
-})
+}))

@@ -1,5 +1,6 @@
-// Positions GPS simulées pour la démo (module « Démo », en développement uniquement).
+// Positions GPS simulées pour la démo (module « Démo », mode démo uniquement : voir lib/demo.ts).
 import type { Location } from '@/types';
+import { DEMO_MODE } from '@/lib/demo';
 
 export const DEMO_GPS_KEY = 'pdj:demo-gps';
 
@@ -23,7 +24,7 @@ export const DEMO_POSITIONS: { label: string; address: string; location: Locatio
 
 /** Position simulée active (null : vrai GPS du téléphone). */
 export const getDemoGps = (): Location | null => {
-  if (!import.meta.env.DEV) return null;
+  if (!DEMO_MODE) return null;
   try {
     return JSON.parse(sessionStorage.getItem(DEMO_GPS_KEY) ?? 'null');
   } catch {

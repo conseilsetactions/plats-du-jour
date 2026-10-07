@@ -1,4 +1,4 @@
-// Outils de démonstration (visibles uniquement en développement) :
+// Outils de démonstration (visibles seulement en mode démo, voir lib/demo.ts) :
 // simuler l'heure, tester des SIRET fictifs, remettre la démo à zéro.
 import { useState } from 'react';
 import { Clock3, FlaskConical, X } from 'lucide-react';

@@ -2,6 +2,7 @@ import { Outlet, useRouterState } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import DemoPanel from '@/components/DemoPanel';
 import Footer from '@/components/Footer';
+import { DEMO_MODE } from '@/lib/demo';
 
 export default function Layout() {
   // Chaque nouvelle page s'ouvre en haut
@@ -14,7 +15,7 @@ export default function Layout() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Outlet />
       <Footer />
-      {import.meta.env.DEV && <DemoPanel />}
+      {DEMO_MODE && <DemoPanel />}
     </div>
   );
 }

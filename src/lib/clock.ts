@@ -1,6 +1,7 @@
 // Horloge de l'app + règles horaires du service.
-// En développement, l'heure peut être simulée (voir DemoClock) pour tester tous les cas.
+// En mode démo (lib/demo.ts), l'heure peut être simulée depuis le module « Démo » pour tester tous les cas.
 import { useEffect, useState } from 'react';
+import { DEMO_MODE } from '@/lib/demo';
 
 export const SERVICE_START_HOUR = 11;
 export const SERVICE_END_HOUR = 14;
@@ -9,7 +10,7 @@ const OVERRIDE_KEY = 'pdj:demo-now';
 const listeners = new Set<() => void>();
 
 export const getNow = (): Date => {
-  if (import.meta.env.DEV) {
+  if (DEMO_MODE) {
     try {
       const override = sessionStorage.getItem(OVERRIDE_KEY);
       if (override) return new Date(override);

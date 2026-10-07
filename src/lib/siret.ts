@@ -1,5 +1,6 @@
 // Vérification d'un SIRET via l'API Recherche d'entreprises de l'État (gratuite, sans clé).
 import type { Location } from '@/types';
+import { DEMO_MODE } from '@/lib/demo';
 
 export interface SiretInfo {
   siret: string;
@@ -15,8 +16,8 @@ export type SiretResult =
   | { ok: false; error: string };
 
 /**
- * SIRET FICTIFS pour tester en développement (module « Démo » en bas à gauche).
- * Ils ne sont reconnus qu'en local, jamais sur le site en ligne.
+ * SIRET FICTIFS pour tester (module « Démo » en bas à gauche).
+ * Reconnus seulement en mode démo (lib/demo.ts), jamais une fois le site lancé pour de vrai.
  */
 export const TEST_SIRETS: SiretInfo[] = [
   {
@@ -148,7 +149,7 @@ export const lookupSiret = async (rawSiret: string): Promise<SiretResult> => {
   if (!isValidSiretFormat(siret)) {
     return { ok: false, error: 'Numéro SIRET invalide (14 chiffres)' };
   }
-  if (import.meta.env.DEV) {
+  if (DEMO_MODE) {
     const test = TEST_SIRETS.find((t) => t.siret === siret);
     if (test) return { ok: true, info: test };
   }
