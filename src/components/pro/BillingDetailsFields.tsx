@@ -1,5 +1,6 @@
 import type { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
+import type { BillingDetails } from '@/lib/proStore';
 import { errorClass, inputClass, labelClass } from './ui';
 
 export const billingSchema = z.object({
@@ -7,10 +8,32 @@ export const billingSchema = z.object({
   street: z.string().trim().min(4, "Indiquez l'adresse"),
   postalCode: z.string().trim().regex(/^\d{5}$/, 'Code postal invalide'),
   city: z.string().trim().min(2, 'Indiquez la ville'),
-  email: z.string().trim().email('Adresse e-mail invalide'),
+  // Facultatifs : sans e-mail, les factures restent disponibles dans l'espace pro
+  email: z
+    .string()
+    .trim()
+    .refine((v) => v === '' || z.string().email().safeParse(v).success, 'Adresse e-mail invalide'),
+  siret: z
+    .string()
+    .trim()
+    .refine((v) => v === '' || /^d{14}$/.test(v.replace(/s/g, '')), 'Le SIRET contient 14 chiffres'),
 });
 
 export type BillingValues = z.infer<typeof billingSchema>;
+
+/** Valeurs du formulaire -> informations enregistrées (champs facultatifs vides retirés). */
+export const toBillingDetails = ({ email, siret, ...rest }: BillingValues): BillingDetails => ({
+  ...rest,
+  email: email || undefined,
+  siret: siret ? siret.replace(/s/g, '') : undefined,
+});
+
+/** Informations enregistrées -> valeurs du formulaire. */
+export const toBillingValues = (details: BillingDetails): BillingValues => ({
+  ...details,
+  email: details.email ?? '',
+  siret: details.siret ?? '',
+});
 
 /** Champs « Informations de facturation » (inscription et page Mon abonnement). */
 export default function BillingDetailsFields({ form }: { form: UseFormReturn<BillingValues> }) {
@@ -67,7 +90,7 @@ export default function BillingDetailsFields({ form }: { form: UseFormReturn<Bil
       )}
       <div>
         <label htmlFor="bill-email" className={labelClass}>
-          E-mail pour recevoir vos factures
+          E-mail pour recevoir vos factures <span className="font-normal text-subtle">(facultatif)</span>
         </label>
         <input
           id="bill-email"
@@ -78,7 +101,25 @@ export default function BillingDetailsFields({ form }: { form: UseFormReturn<Bil
           className={inputClass}
           {...register('email')}
         />
-        {errors.email && <p className={errorClass}>{errors.email.message}</p>}
+        {errors.email ? (
+          <p className={errorClass}>{errors.email.message}</p>
+        ) : (
+          <p className="mt-1 text-xs text-subtle">Sans e-mail, vos factures restent disponibles dans votre espace</p>
+        )}
+      </div>
+      <div>
+        <label htmlFor="bill-siret" className={labelClass}>
+          SIRET <span className="font-normal text-subtle">(facultatif)</span>
+        </label>
+        <input
+          id="bill-siret"
+          inputMode="numeric"
+          placeholder="14 chiffres, s'il doit figurer sur vos factures"
+          aria-invalid={!!errors.siret}
+          className={inputClass}
+          {...register('siret')}
+        />
+        {errors.siret && <p className={errorClass}>{errors.siret.message}</p>}
       </div>
     </div>
   );

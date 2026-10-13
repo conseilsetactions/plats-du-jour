@@ -17,8 +17,8 @@ export const faqPreview = [
     a: 'Non. Vous payez uniquement votre abonnement, après les 6 mois offerts',
   },
   {
-    q: 'Pourquoi mon SIRET ?',
-    a: 'Pour vérifier que votre établissement existe et remplir son adresse automatiquement',
+    q: 'Comment trouvez-vous mon établissement ?',
+    a: 'Vous le choisissez sur Google Maps : son nom, son adresse et sa note Google sont repris automatiquement',
   },
   {
     q: 'Quand mes plats sont-ils visibles ?',
@@ -161,7 +161,7 @@ export function FinalCta({ loggedIn, title }: { loggedIn: boolean; title: string
       <p className="mt-1 text-sm text-accent-foreground/90">
         {loggedIn
           ? 'Retrouvez vos plats et votre équipe dans votre espace'
-          : 'Inscription avec votre portable et votre SIRET'}
+          : 'Inscription avec votre portable, en quelques minutes'}
       </p>
       <div className="mt-5 lg:mx-auto lg:mt-8 lg:max-w-md">
         <MainCta loggedIn={loggedIn} inverted />

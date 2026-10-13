@@ -12,8 +12,12 @@ import { dateKey } from '@/utils/format';
 
 export interface RestaurantProfile {
   id: string;
-  siret: string;
-  name: string;
+  /** Fiche Google de l'établissement (à la place du SIRET) : identifiant, note, nombre d'avis, lien. */
+  googlePlaceId: string;
+  rating?: number;
+  ratingCount?: number;
+  mapsUrl?: string;
+  name: string; // modifiable par le pro (repris de Google à l'inscription)
   street: string;
   postalCode: string;
   city: string;
@@ -38,7 +42,8 @@ export interface BillingDetails {
   street: string;
   postalCode: string;
   city: string;
-  email: string; // les factures Stripe sont envoyées par e-mail
+  email?: string; // facultatif : pour recevoir les factures par e-mail (sinon dans l'espace pro)
+  siret?: string; // facultatif : peut être demandé sur les factures entre professionnels
 }
 
 export const CANCEL_REASONS = {
@@ -160,6 +165,8 @@ interface ProDb {
   adminActions: AdminAction[];
   /** L'admin consulte l'espace d'un établissement (« voir en tant que »). */
   impersonating?: boolean;
+  /** Dernière visite de la personne connectée (déconnexion après SESSION_MAX_IDLE_DAYS sans visite). */
+  lastActiveAt?: string;
 }
 
 const DB_KEY = 'pdj:pro-db-v2';
@@ -175,6 +182,9 @@ const EMPTY_DB: ProDb = {
 let cache: ProDb | null = null;
 const listeners = new Set<() => void>();
 
+/** Les restaurateurs restent connectés tant qu'ils reviennent au moins une fois tous les 30 jours. */
+export const SESSION_MAX_IDLE_DAYS = 30;
+
 const read = (): ProDb => {
   if (cache) return cache;
   try {
@@ -182,6 +192,21 @@ const read = (): ProDb => {
     cache = stored ? { ...EMPTY_DB, ...JSON.parse(stored) } : EMPTY_DB;
   } catch {
     cache = EMPTY_DB;
+  }
+  // À l'ouverture du site : déconnexion après 30 jours sans visite, sinon on note la visite
+  // (en vrai : durée de vie du jeton de connexion côté serveur)
+  const db = cache!;
+  if (db.session) {
+    const idleDays = db.lastActiveAt ? (Date.now() - new Date(db.lastActiveAt).getTime()) / 86_400_000 : 0;
+    cache =
+      idleDays > SESSION_MAX_IDLE_DAYS
+        ? { ...db, session: null, impersonating: false, lastActiveAt: undefined }
+        : { ...db, lastActiveAt: new Date().toISOString() };
+    try {
+      localStorage.setItem(DB_KEY, JSON.stringify(cache));
+    } catch {
+      // stockage indisponible
+    }
   }
   return cache!;
 };
@@ -236,6 +261,7 @@ export const proStore = {
       const next: ProDb = {
         ...db,
         session: key,
+        lastActiveAt: now,
         accounts: {
           ...db.accounts,
           [key]: db.accounts[key]
@@ -379,7 +405,9 @@ export const proStore = {
     });
   },
 
-  updateRestaurant: (changes: Partial<Pick<RestaurantProfile, 'name' | 'city' | 'quartier' | 'openDays'>>) =>
+  updateRestaurant: (
+    changes: Partial<Pick<RestaurantProfile, 'name' | 'street' | 'postalCode' | 'city' | 'quartier' | 'openDays'>>
+  ) =>
     write((db) => updateRestaurant(db, (r) => ({ ...r, ...changes }))),
 
   // --- Équipe et rappel de la semaine ---
@@ -434,7 +462,8 @@ export const proStore = {
       }))
     ),
 
-  isSiretTaken: (siret: string) => Object.values(read().restaurants).some((r) => r.siret === siret),
+  /** Un établissement Google ne peut avoir qu'un seul compte. */
+  isPlaceTaken: (placeId: string) => Object.values(read().restaurants).some((r) => r.googlePlaceId === placeId),
 
   setPlan: (plan: PlanId) => write((db) => updateRestaurant(db, (r) => ({ ...r, plan }))),
 
@@ -489,7 +518,9 @@ export const proStore = {
         next.accounts[phone] = { restaurantId: id };
         next.restaurants[id] = {
           id,
-          siret: `9990000010${String(i + 1).padStart(4, '0')}`,
+          googlePlaceId: `demo-seed-${i + 1}`,
+          rating: 4 + ((i * 3) % 8) / 10,
+          ratingCount: 40 + i * 37,
           name,
           street: `${10 + i} rue de la Démo`,
           postalCode: isJoliette ? '13002' : '13001',
@@ -561,8 +592,8 @@ export const proStore = {
         `Formule : ${PLANS[restaurant.plan].name}`,
         `Raison : ${reasonLabel}`,
         comment ? `Commentaire : « ${comment} »` : null,
-        `Contact : ${restaurant.billing.details.email} / ${restaurant.ownerPhone}`,
-        `SIRET : ${restaurant.siret}`,
+        `Contact : ${restaurant.billing.details.email ?? "pas d'e-mail"} / ${restaurant.ownerPhone}`,
+        `Adresse : ${restaurant.street}, ${restaurant.postalCode} ${restaurant.city}`,
       ]
         .filter(Boolean)
         .join('\n'),

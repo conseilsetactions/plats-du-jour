@@ -3,7 +3,12 @@ import { Link } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronRight, CreditCard, Pencil } from 'lucide-react';
-import BillingDetailsFields, { billingSchema, type BillingValues } from '@/components/pro/BillingDetailsFields';
+import BillingDetailsFields, {
+  billingSchema,
+  toBillingDetails,
+  toBillingValues,
+  type BillingValues,
+} from '@/components/pro/BillingDetailsFields';
 import ProPage from '@/components/pro/ProPage';
 import { primaryButton, secondaryButton } from '@/components/pro/ui';
 import { getBillingState, getLastVisibleDay } from '@/lib/billing';
@@ -36,7 +41,7 @@ export default function ProMySubscription() {
   const [cardNotice, setCardNotice] = useState(false);
   const billingForm = useForm<BillingValues>({
     resolver: zodResolver(billingSchema),
-    values: restaurant?.billing?.details,
+    values: restaurant?.billing ? toBillingValues(restaurant.billing.details) : undefined,
   });
 
   return (
@@ -89,7 +94,7 @@ export default function ProMySubscription() {
                 return (
                   <div className="mt-4 rounded-md border border-dashed border-accent/60 p-3 text-[13px]">
                     <p className="text-xs font-semibold uppercase tracking-wide text-accent-strong">
-                      Démo : e-mail envoyé le {longDate(reminderDate.toISOString())} à {billing.details.email}
+                      Démo : e-mail envoyé le {longDate(reminderDate.toISOString())} à {billing.details.email ?? "l'adresse e-mail donnée à Stripe"}
                     </p>
                     <p className="mt-1.5 font-semibold text-foreground">{email.subject}</p>
                     <p className="mt-1 whitespace-pre-line rounded-md bg-muted p-2.5 text-foreground">{email.body}</p>
@@ -164,7 +169,7 @@ export default function ProMySubscription() {
                 <form
                   noValidate
                   onSubmit={billingForm.handleSubmit((details) => {
-                    proStore.updateBillingDetails(details);
+                    proStore.updateBillingDetails(toBillingDetails(details));
                     setEditingBilling(false);
                   })}
                 >
@@ -185,9 +190,15 @@ export default function ProMySubscription() {
                     {billing.details.street}, {billing.details.postalCode} {billing.details.city}
                   </p>
                   <p className="mt-1 text-muted-foreground">
-                    Factures envoyées à <span className="text-foreground">{billing.details.email}</span>
+                    {billing.details.email ? (
+                      <>
+                        Factures envoyées à <span className="text-foreground">{billing.details.email}</span>
+                      </>
+                    ) : (
+                      "Factures disponibles dans votre espace (pas d'e-mail renseigné)"
+                    )}
                   </p>
-                  <p className="mt-1 text-xs text-subtle">SIRET {restaurant.siret}</p>
+                  {billing.details.siret && <p className="mt-1 text-xs text-subtle">SIRET {billing.details.siret}</p>}
                   <Link
                     to="/pro/factures"
                     className="mt-3 inline-flex items-center gap-0.5 text-sm font-semibold text-accent no-underline"

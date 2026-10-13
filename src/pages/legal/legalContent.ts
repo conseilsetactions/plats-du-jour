@@ -95,8 +95,8 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
         title: 'Si vous êtes un établissement (professionnels)',
         paragraphs: [
           "Compte : numéro de portable (identifiant et SMS de service), mot de passe (conservé uniquement sous forme d'empreinte chiffrée, jamais en clair).",
-          "Établissement : SIRET, nom, adresse et quartier (l'adresse provient de l'annuaire public des entreprises), jours d'ouverture, formule choisie.",
-          "Facturation : nom ou raison sociale, adresse de facturation, e-mail. Les données de carte bancaire sont saisies et conservées par notre prestataire de paiement Stripe : Plats du Jour n'y a jamais accès.",
+          "Établissement : nom, adresse, position, quartier, note et nombre d'avis repris de sa fiche Google Maps, jours d'ouverture, formule choisie.",
+          "Facturation : nom ou raison sociale, adresse de facturation, et si vous les indiquez, e-mail et SIRET. Les données de carte bancaire sont saisies et conservées par notre prestataire de paiement Stripe : Plats du Jour n'y a jamais accès.",
           "Contenus : plats et prix publiés.",
           'Équipe : numéros de portable des membres ajoutés par le propriétaire.',
           'Suivi : régularité des publications, SMS et e-mails envoyés, motif de résiliation si vous le précisez.',
@@ -118,6 +118,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
           "Vos données ne sont jamais vendues. Elles sont accessibles à l'équipe de Plats du Jour et à nos prestataires techniques, dans la limite de leur mission :",
           'Hébergement : [à compléter : hébergeur et base de données retenus].',
           'Paiement : Stripe Payments Europe Ltd.',
+          "Recherche des établissements à l'inscription, notes et cartes : Google (Google Maps Platform), Google Ireland Limited.",
           "Mesure d'audience : Umami (Umami Software, Inc.), statistiques anonymes sans cookie [à compléter : à vérifier, localisation des serveurs].",
           'Envoi des SMS : [à compléter : prestataire].',
           'Envoi des e-mails : [à compléter : prestataire].',
@@ -167,7 +168,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
       {
         title: '2. Inscription',
         paragraphs: [
-          "L'inscription se fait avec un numéro de portable vérifié par SMS et un mot de passe. L'établissement est vérifié à partir de son numéro SIRET (établissement existant et en activité).",
+          "L'inscription se fait avec un numéro de portable vérifié par SMS et un mot de passe. L'établissement est choisi par la personne qui s'inscrit sur Google Maps : son nom, son adresse, sa position et sa note Google sont repris de sa fiche. Un établissement ne peut avoir qu'un seul compte.",
           "La personne qui s'inscrit certifie être propriétaire ou représentante légale de l'établissement, ou dûment autorisée à le représenter. Toute inscription frauduleuse entraîne la suppression du compte.",
           "Le titulaire du compte peut ajouter des membres d'équipe, qui publient avec leur propre portable. Il reste responsable de leur utilisation du service.",
         ],
@@ -185,7 +186,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
         paragraphs: [
           `Toute nouvelle inscription bénéficie de ${FREE_MONTHS} mois gratuits, sans engagement. Une carte bancaire est enregistrée à l'inscription, mais aucun prélèvement n'a lieu pendant cette période.`,
           `Un e-mail rappelle la date du premier prélèvement ${REMINDER_DAYS_BEFORE_CHARGE} jours avant la fin de la période gratuite. Sans résiliation, l'abonnement payant démarre automatiquement à son terme.`,
-          '[à compléter : une seule période gratuite par établissement (SIRET) ?]',
+          '[à compléter : une seule période gratuite par établissement (fiche Google) ?]',
         ],
       },
       {

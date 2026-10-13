@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { CalendarCheck, CircleX, Gift, Handshake, Megaphone, Settings2, Sprout, UtensilsCrossed } from 'lucide-react';
+import { CalendarCheck, CircleCheck, CircleX, Gift, Handshake, Megaphone, Settings2, Sprout, UtensilsCrossed } from 'lucide-react';
 import Header from '@/components/Header';
 import { MainCta } from '@/components/pro/landingParts';
 import { FREE_MONTHS } from '@/lib/plans';
@@ -42,6 +42,8 @@ const promises = [
  */
 export default function ProGettingStarted() {
   const loggedIn = proStore.hasActiveSpace(useProDb());
+  // Juste après l'inscription (1re visite) : message de bienvenue
+  const [justSignedUp] = useState(proStore.shouldShowGettingStarted);
 
   // Vue une fois : elle ne s'affichera plus automatiquement à la connexion
   useEffect(() => {
@@ -53,6 +55,15 @@ export default function ProGettingStarted() {
       <Header subtitle="Espace pro" />
 
       <main className={pageMain}>
+        {justSignedUp && (
+          <div className="flex items-start gap-3 border-b border-open/30 bg-open-soft px-5 py-4">
+            <CircleCheck className="mt-0.5 h-5 w-5 shrink-0 text-open" />
+            <p className="text-sm text-foreground">
+              <span className="font-semibold">Bienvenue, votre inscription est terminée !</span> Rien à payer pendant{' '}
+              {FREE_MONTHS} mois. Publiez vos plats quand vous voulez : voici comment bien démarrer
+            </p>
+          </div>
+        )}
         {/* Hero */}
         <section className="bg-accent-soft px-5 pb-8 pt-8">
           <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-accent-strong">
@@ -128,7 +139,7 @@ export default function ProGettingStarted() {
                 to="/pro/espace"
                 className="flex w-full items-center justify-center rounded-lg bg-card px-4 py-3 text-[15px] font-semibold text-accent-strong no-underline hover:bg-accent-soft"
               >
-                Publier mes premiers plats
+                Publier mes plats quand je veux
               </Link>
             ) : (
               <MainCta loggedIn={false} inverted />

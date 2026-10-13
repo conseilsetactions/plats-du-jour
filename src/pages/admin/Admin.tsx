@@ -341,7 +341,8 @@ export default function Admin() {
                       <td className="px-3 py-2.5">
                         <span className="block font-semibold text-foreground">{restaurant.name}</span>
                         <span className="text-xs text-muted-foreground">
-                          {restaurant.quartier} · SIRET {restaurant.siret}
+                          {restaurant.quartier}
+                          {restaurant.rating !== undefined && ` · ★ ${restaurant.rating.toFixed(1).replace('.', ',')} Google`}
                         </span>
                       </td>
                       <td className="px-3 py-2.5">{PLANS[restaurant.plan].name}</td>

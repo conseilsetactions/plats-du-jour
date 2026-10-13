@@ -83,7 +83,7 @@ export default function ProInvoice() {
                   <p className="text-muted-foreground">
                     {details.postalCode} {details.city}
                   </p>
-                  <p className="text-muted-foreground">SIRET {restaurant.siret}</p>
+                  {details.siret && <p className="text-muted-foreground">SIRET {details.siret}</p>}
                 </div>
               </div>
 

@@ -20,8 +20,8 @@ const faq: { q: string; a: string }[] = [
     a: 'Non. Vous payez uniquement votre abonnement, aucune commission sur ce que vous vendez',
   },
   {
-    q: 'Pourquoi me demande-t-on mon SIRET ?',
-    a: "Pour vérifier que votre établissement existe et qu'il est en activité, et remplir son adresse automatiquement. Restaurants, traiteurs, boulangeries : toutes les activités sont acceptées",
+    q: 'Comment mon établissement est-il retrouvé ?',
+    a: "Vous le cherchez par son nom sur Google Maps, puis vous confirmez que c'est bien le vôtre. Son nom, son adresse, sa position et sa note Google sont repris automatiquement : vous pouvez ensuite modifier le nom et l'adresse. Restaurants, traiteurs, boulangeries : toutes les activités sont acceptées",
   },
   {
     q: 'Quand mes plats sont-ils visibles ?',

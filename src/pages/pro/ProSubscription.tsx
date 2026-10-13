@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from '@tanstack/react-router';
+import { Navigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import BillingDetailsFields, { billingSchema, type BillingValues } from '@/components/pro/BillingDetailsFields';
+import BillingDetailsFields, {
+  billingSchema,
+  toBillingDetails,
+  type BillingValues,
+} from '@/components/pro/BillingDetailsFields';
 import {
   BellRing,
   CalendarCheck,
@@ -41,7 +45,6 @@ const longDate = (date: Date) =>
 export default function ProSubscription() {
   const db = useProDb();
   const now = useNow();
-  const navigate = useNavigate();
   const [redirecting, setRedirecting] = useState(false);
   const { restaurant, role } = proStore.getContext(db);
   // Écran « Comprendre les 6 mois gratuits » d'abord, puis le formulaire de carte
@@ -52,7 +55,7 @@ export default function ProSubscription() {
   useEffect(() => {
     if (owner) trackFunnel(introSeen ? 'paiement' : 'paiement_intro');
   }, [owner, introSeen]);
-  // Adresse de facturation pré-remplie depuis l'établissement (SIRET)
+  // Adresse de facturation pré-remplie depuis l'établissement (fiche Google)
   const billingForm = useForm<BillingValues>({
     resolver: zodResolver(billingSchema),
     defaultValues: {
@@ -61,11 +64,14 @@ export default function ProSubscription() {
       postalCode: restaurant?.postalCode ?? '',
       city: restaurant?.city ?? '',
       email: '',
+      siret: '',
     },
   });
 
   if (!db.session) return <Navigate to="/pro/connexion" search={{ mode: 'login' }} />;
   // Pas d'établissement, membre d'équipe ou carte déjà enregistrée : rien à faire ici
+  // Carte tout juste enregistrée : fin du tunnel sur la page de bienvenue (1re fois)
+  if (restaurant?.billing && role === 'owner' && proStore.shouldShowGettingStarted()) return <Navigate to="/pro/bien-demarrer" />;
   if (!restaurant || role !== 'owner' || restaurant.billing) return <Navigate to="/pro/espace" />;
 
   const plan = PLANS[restaurant.plan];
@@ -94,10 +100,10 @@ export default function ProSubscription() {
   const saveCard = (details: BillingValues) => {
     setRedirecting(true);
     setTimeout(() => {
-      proStore.startTrial(chargeDate, details);
+      proStore.startTrial(chargeDate, toBillingDetails(details));
       trackFunnel('termine');
       trackAb('signup_complete'); // conversion attribuée à la version de landing vue
-      navigate({ to: '/pro/espace' }); // « Bien démarrer » s'affichera à la prochaine connexion
+      // Fin du tunnel : la page bascule sur « Bien démarrer » (voir plus haut), sans demander de plats
     }, 1200);
   };
 
@@ -180,7 +186,6 @@ export default function ProSubscription() {
 
               <div className="mt-4">
                 <BillingDetailsFields form={billingForm} />
-                <p className="mt-3 text-xs text-subtle">SIRET {restaurant.siret}</p>
               </div>
 
               <button

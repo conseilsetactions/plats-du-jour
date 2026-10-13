@@ -7,7 +7,7 @@ import { proStore, useProDb } from '@/lib/proStore';
 
 /**
  * Mon établissement.
- * Propriétaire : nom affiché, ville, quartier et jours d'ouverture (adresse et SIRET viennent de la vérification).
+ * Propriétaire : nom, adresse et jours d'ouverture (note, position et quartier viennent de la fiche Google).
  * Membre de l'équipe : jours d'ouverture uniquement.
  */
 export default function ProEstablishment() {
@@ -33,8 +33,8 @@ export default function ProEstablishment() {
           {isOwner ? (
             <>
               <p className="mb-4 text-[13px] text-muted-foreground">
-                L'adresse et le SIRET proviennent de la vérification de votre établissement et ne peuvent pas
-                être modifiés ici
+                Vous pouvez modifier le nom et l'adresse. La note, la position et le quartier viennent de votre fiche
+                Google
               </p>
               <EditRestaurantForm key={restaurant.id} restaurant={restaurant} onDone={done} onCancel={cancel} />
             </>

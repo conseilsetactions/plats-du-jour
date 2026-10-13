@@ -21,7 +21,7 @@ const steps = [
   {
     icon: BadgeCheck,
     title: 'Créez votre compte',
-    text: 'Avec votre portable et le SIRET de votre établissement, vérifié automatiquement',
+    text: 'Avec votre portable, puis vous retrouvez votre établissement sur Google Maps',
   },
   {
     icon: CalendarDays,

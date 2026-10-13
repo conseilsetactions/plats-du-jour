@@ -81,7 +81,9 @@ export default function ProCancel() {
                   publier vos plats du jour : ils restent visibles par les clients
                 </p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Un e-mail de confirmation vous est envoyé à {billing.details.email}
+                  {billing.details.email
+                    ? `Un e-mail de confirmation vous est envoyé à ${billing.details.email}`
+                    : 'Vous retrouvez cette confirmation dans « Mon abonnement »'}
                 </p>
               </div>
 
@@ -95,10 +97,12 @@ export default function ProCancel() {
 
               {done && (
                 <>
-                  <DemoEmail
-                    to={billing.details.email}
-                    email={EMAILS.cancellationConfirmed(restaurant.name, lastDay)}
-                  />
+                  {billing.details.email && (
+                    <DemoEmail
+                      to={billing.details.email}
+                      email={EMAILS.cancellationConfirmed(restaurant.name, lastDay)}
+                    />
+                  )}
                   <DemoEmail to={done.to} email={done} note="L'alerte est aussi visible dans l'interface admin" />
                 </>
               )}

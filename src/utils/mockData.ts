@@ -150,6 +150,7 @@ export const publishedToPlats = (db: ReturnType<typeof useProDb>): Plat[] =>
         postalCode: restaurant.postalCode,
       },
       location: restaurant.location,
+      rating: restaurant.rating, // note Google de la fiche choisie à l'inscription
       distance: 0,
     },
   }));

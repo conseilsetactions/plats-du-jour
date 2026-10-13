@@ -75,7 +75,7 @@ export default function ProDashboard() {
           <h1 className="text-xl font-bold text-foreground">Votre établissement</h1>
           <p className="mt-1 mb-5 text-sm text-muted-foreground">
             Formule choisie : <span className="font-medium text-foreground">{PLANS[pendingPlan].name}</span>.
-            Indiquez le numéro SIRET de votre établissement, nous remplissons le reste
+            Retrouvez votre établissement sur Google Maps, nous remplissons le reste
           </p>
           <CreateRestaurantForm />
           <p className="mt-4 rounded-md bg-accent-soft px-3 py-2.5 text-center text-[13px] text-foreground">

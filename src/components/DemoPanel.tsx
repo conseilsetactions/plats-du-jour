@@ -1,13 +1,13 @@
 // Outils de démonstration (visibles seulement en mode démo, voir lib/demo.ts) :
-// simuler l'heure, tester des SIRET fictifs, remettre la démo à zéro.
+// simuler l'heure et le GPS, choisir un établissement fictif à l'inscription, remettre la démo à zéro.
 import { useState } from 'react';
 import { Clock3, FlaskConical, X } from 'lucide-react';
 import { getDemoMonday, isDemoNow, setDemoNow, useNow } from '@/lib/clock';
 import { DEMO_POSITIONS, getDemoGps, setDemoGps } from '@/lib/demoGps';
 import { REMINDER_DAYS_BEFORE_CHARGE, trialEndDate } from '@/lib/plans';
 import { proStore } from '@/lib/proStore';
-import { TEST_SIRETS } from '@/lib/siret';
-import { DEMO_SIRET_EVENT } from '@/components/pro/RestaurantForm';
+import { DEMO_PLACES } from '@/lib/places';
+import { DEMO_PLACE_EVENT } from '@/components/pro/RestaurantForm';
 
 const presets: { label: string; dayOffset: number; hour: number }[] = [
   { label: 'Lundi 10h', dayOffset: 0, hour: 10 },
@@ -73,11 +73,10 @@ export default function DemoPanel() {
   // Juste après la fin des 6 mois offerts d'un compte créé aujourd'hui : 1re facture émise
   const applyAfterTrial = () => setDemoNow(afterTrialDate());
 
-  const useSiret = (siret: string) => {
-    // Remplit le champ SIRET s'il est affiché, et copie le numéro dans tous les cas
-    window.dispatchEvent(new CustomEvent(DEMO_SIRET_EVENT, { detail: siret }));
-    navigator.clipboard?.writeText(siret).catch(() => {});
-    setCopied(siret);
+  // À l'étape « Établissement » de l'inscription : choisit directement un établissement fictif
+  const usePlace = (placeId: string) => {
+    window.dispatchEvent(new CustomEvent(DEMO_PLACE_EVENT, { detail: placeId }));
+    setCopied(placeId);
   };
 
   const resetDemo = () => {
@@ -145,17 +144,17 @@ export default function DemoPanel() {
             </button>
           </div>
 
-          <p className="mt-4 mb-1.5 font-medium text-foreground">SIRET de test</p>
+          <p className="mt-4 mb-1.5 font-medium text-foreground">Établissements de test</p>
           <p className="mb-2 text-muted-foreground">
-            À l'étape SIRET, touchez un établissement fictif pour le remplir et le vérifier
+            À l'étape « Établissement », touchez-en un pour le choisir (ou tapez son nom dans la recherche)
           </p>
           <div className="space-y-1.5">
-            {TEST_SIRETS.map((test) => (
-              <button key={test.siret} onClick={() => useSiret(test.siret)} className={`${chip} block w-full text-left`}>
-                <span className="block font-medium">{test.name}</span>
+            {DEMO_PLACES.map((place) => (
+              <button key={place.placeId} onClick={() => usePlace(place.placeId)} className={`${chip} block w-full text-left`}>
+                <span className="block font-medium">{place.name}</span>
                 <span className="text-muted-foreground">
-                  {test.siret}
-                  {copied === test.siret && ' · copié'}
+                  {place.street}, {place.city}
+                  {copied === place.placeId && ' · choisi'}
                 </span>
               </button>
             ))}
