@@ -1,5 +1,5 @@
 // Formules d'abonnement restaurateur (gratuites les 6 premiers mois)
-export type PlanId = 'plat' | 'menu' | 'ia';
+export type PlanId = 'plat' | 'menu';
 
 export const FREE_MONTHS = 6;
 export const VAT_RATE = 0.2;
@@ -15,31 +15,29 @@ export const trialEndDate = (from: Date) => {
   return end;
 };
 
-export const PLAN_IDS: PlanId[] = ['plat', 'menu', 'ia'];
+export const PLAN_IDS: PlanId[] = ['plat', 'menu'];
 
+/**
+ * Deux formules pour l'instant (la formule « Menu + IA » est retirée).
+ * L'identifiant technique de la Formule reste « menu » (données déjà enregistrées).
+ */
 export const PLANS: Record<PlanId, { name: string; price: number; tagline: string; features: string[] }> = {
   plat: {
     name: 'Plat du jour',
     price: 5,
-    tagline: 'Publiez votre plat du jour en 30 secondes',
+    tagline: 'Une seule ligne à saisir : votre plat du jour',
     features: ['1 plat par jour', 'Saisie de la semaine en une fois'],
   },
   menu: {
-    name: 'Menu',
+    name: 'Formule',
     price: 7,
-    tagline: 'Publiez vos suggestions du jour',
-    features: ['Entrée, plat, dessert, formule'],
-  },
-  ia: {
-    name: 'Menu + IA',
-    price: 9,
-    tagline: 'Prenez votre ardoise en photo, l’IA remplit tout',
-    features: ['Menu rempli grâce à l’IA', 'Modifiable avant publication'],
+    tagline: 'Votre ardoise : tous vos plats du jour',
+    features: ['Plusieurs plats par jour', 'Plats uniquement (pas d’entrées ni de desserts)'],
   },
 };
 
-/** Les formules Menu et Menu + IA permettent plusieurs lignes par jour. */
-export const isMenuPlan = (plan: PlanId) => plan !== 'plat';
+/** La Formule permet plusieurs plats par jour (l'ardoise). */
+export const isMenuPlan = (plan: PlanId) => plan === 'menu';
 
-export const MENU_CATEGORIES = ['Entrée', 'Plat', 'Dessert', 'Formule'] as const;
-export type MenuCategory = (typeof MENU_CATEGORIES)[number];
+/** Anciennes catégories de ligne (avant la Formule « plats uniquement ») : conservées pour les données existantes. */
+export type MenuCategory = 'Entrée' | 'Plat' | 'Dessert' | 'Formule';

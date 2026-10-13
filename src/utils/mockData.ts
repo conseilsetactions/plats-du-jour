@@ -68,25 +68,20 @@ const rows: MockRow[] = [
   ['30', 'La Table de la Major', '2 Rue de la Major', 'Joliette', '13002', 43.3008, 5.3655, 'Risotto aux cèpes', 13, 4.6],
 ];
 
-// Restaurants de démo en formule Menu : plusieurs lignes par jour [catégorie, nom, prix]
-const MENUS: Record<string, [string, string, number][]> = {
+// Restaurants de démo en Formule (ardoise) : plusieurs plats par jour [nom, prix], plats uniquement
+const MENUS: Record<string, [string, number][]> = {
   '2': [
-    ['Entrée', 'Soupe de poissons', 8],
-    ['Plat', 'Daurade grillée, légumes du soleil', 13.9],
-    ['Dessert', 'Panna cotta à la figue', 5.5],
-    ['Formule', 'Entrée + plat + dessert', 24],
+    ['Daurade grillée, légumes du soleil', 13.9],
+    ['Soupe de poissons et sa rouille', 12],
   ],
   '18': [
-    ['Entrée', 'Panisses et aïoli', 6],
-    ['Plat', 'Pieds paquets', 13.5],
-    ['Dessert', 'Navettes et café', 4.5],
+    ['Pieds paquets', 13.5],
+    ['Daube provençale', 12.5],
   ],
   '29': [
-    ['Entrée', 'Salade de chèvre chaud', 7],
-    ['Plat', 'Poulet rôti, pommes grenaille', 12.5],
-    ['Plat', 'Pavé de saumon, riz noir', 14],
-    ['Dessert', 'Tarte au citron meringuée', 5],
-    ['Formule', 'Plat + dessert', 16],
+    ['Poulet rôti, pommes grenaille', 12.5],
+    ['Pavé de saumon, riz noir', 14],
+    ['Risotto de petit épeautre', 11.5],
   ],
 };
 
@@ -102,12 +97,11 @@ const allPlats: Plat[] = rows.flatMap(
     };
     const menu = MENUS[id];
     if (!menu) return [{ id, name: platName, description: '', price, restaurant }];
-    return menu.map(([category, itemName, itemPrice], i) => ({
+    return menu.map(([itemName, itemPrice], i) => ({
       id: `${id}-${i}`,
       name: itemName,
       description: '',
       price: itemPrice,
-      category,
       restaurant,
     }));
   }

@@ -500,7 +500,7 @@ export const proStore = {
             longitude: (isJoliette ? 5.3665 : 5.374) - offset,
           },
           certifiedAt: signup.toISOString(),
-          plan: (['plat', 'menu', 'ia'] as const)[i % 3],
+          plan: (['plat', 'menu'] as const)[i % 2],
           ownerPhone: phone,
           members: [],
           billing: {

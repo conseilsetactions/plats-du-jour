@@ -178,11 +178,11 @@ export default function ProDashboard() {
       {/* Publication de la semaine */}
       <section className="px-4 py-5">
         <h1 className="text-xl font-bold text-foreground">
-          {isMenuPlan(plan) ? 'Mes menus du jour de la semaine' : 'Mes plats du jour de la semaine'}
+          Mes plats du jour de la semaine
         </h1>
         <p className="mt-0.5 text-[13px] text-muted-foreground">
           {isMenuPlan(plan)
-            ? 'Vos suggestions du jour (entrée, plat, dessert, formule), du lundi au vendredi'
+            ? 'Votre ardoise : tous vos plats du jour, du lundi au vendredi'
             : 'Un plat par jour, du lundi au vendredi'}
         </p>
         {plan === 'plat' && hasMultipleLines && (
@@ -193,7 +193,7 @@ export default function ProDashboard() {
 
         <div className="mt-4">
           {isMenuPlan(plan) ? (
-            <MenuWeekForm days={days} suggestions={recentNames} onSave={save} aiEnabled={plan === 'ia'} />
+            <MenuWeekForm days={days} suggestions={recentNames} onSave={save} />
           ) : (
             <WeekForm days={days} suggestions={recentNames} onSave={save} />
           )}

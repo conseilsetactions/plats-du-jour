@@ -26,8 +26,6 @@ const DEMO_STORAGE_KEYS = [
   'pdj:user-preferences',
   'pdj:ab-variant',
   'pdj:ab-events',
-  'pdj:ab-list-variant',
-  'pdj:ab-list-events',
   'pdj:funnel-events',
 ];
 

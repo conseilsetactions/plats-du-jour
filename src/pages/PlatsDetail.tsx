@@ -65,7 +65,7 @@ export default function PlatsDetail() {
             <span className="shrink-0 text-xl font-bold text-accent">{formatPrice(plat.price)}</span>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
-            {plat.category ? `${plat.category} · Menu du jour` : 'Plat du jour'}
+            Plat du jour
           </p>
         </section>
 

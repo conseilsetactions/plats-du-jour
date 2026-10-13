@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import Header from '@/components/Header';
 import LocationPicker from '@/components/LocationPicker';
 import { findNearestZone, getSearchLocation, loadZone, saveZone, type Zone } from '@/hooks/searchZone';
 import PlatsCard from '@/components/PlatsCard';
 import PlatsMap from '@/components/PlatsMap';
-import PlatsTable from '@/components/PlatsTable';
 import FilterPill from '@/components/FilterPill';
 import WalkSlider, { type WalkLimit } from '@/components/WalkSlider';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
@@ -13,7 +12,6 @@ import PublicIntro from '@/components/PublicIntro';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
 import { getServiceStatus, useNow, type ServiceStatus } from '@/lib/clock';
-import { getListVariant, trackList, type ListVariant } from '@/lib/listAbtest';
 import { useProDb } from '@/lib/proStore';
 import type { Plat } from '@/types';
 import { getMockPlats, publishedToPlats } from '@/utils/mockData';
@@ -69,7 +67,6 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   // Version C : établissement survolé dans la liste ou choisi sur le plan
   const [activeRestaurant, setActiveRestaurant] = useState<string | null>(null);
-  const [listVariant] = useState<ListVariant>(getListVariant);
   const proDb = useProDb();
   // `now` en dépendance : la liste des plats publiés change avec le jour
   const published = useMemo(() => publishedToPlats(proDb), [proDb, now]);
@@ -105,26 +102,8 @@ export default function Home() {
   const isOpen = status === 'open';
   const hasList = isOpen && !!effectiveLocation && !outOfZone && filteredPlats.length > 0;
 
-  // Ordinateur : A/B test A (ardoise) / C (liste + plan) pour les visiteurs avec GPS.
-  // Sans GPS, toujours le plan : c'est le seul moyen de situer les établissements.
-  const inAbTest = isDesktop && gpsActive;
-  const desktopVariant: ListVariant = gpsActive ? listVariant : 'c';
-
-  // Une vue par visite et par version, seulement quand la liste est réellement affichée
-  const viewTracked = useRef(false);
-  useEffect(() => {
-    if (!inAbTest || !hasList || viewTracked.current) return;
-    viewTracked.current = true;
-    trackList('view', listVariant);
-  }, [inAbTest, hasList, listVariant]);
-
-  const trackOpen = () => {
-    if (inAbTest) trackList('plat_click', listVariant);
-  };
-  const openPlat = (plat: Plat) => {
-    trackOpen();
-    navigate({ to: '/plats/$platId', params: { platId: plat.id } });
-  };
+  // Ordinateur : toujours la liste à gauche et le plan à droite (avec ou sans GPS)
+  const openPlat = (plat: Plat) => navigate({ to: '/plats/$platId', params: { platId: plat.id } });
 
   // Clic sur un repère du plan : on montre ses plats dans la liste
   const selectFromMap = (id: string | null) => {
@@ -233,14 +212,8 @@ export default function Home() {
         </div>
 
         <div className="lg:mt-4">
-          {hasList && isDesktop && desktopVariant === 'a' ? (
-            /* Version A : l'ardoise du quartier */
-            <section className={card}>
-              {countLine}
-              <PlatsTable plats={filteredPlats} showDistance={gpsActive} onOpen={trackOpen} />
-            </section>
-          ) : hasList && isDesktop ? (
-            /* Version C : liste à gauche, plan à droite */
+          {hasList && isDesktop ? (
+            /* Ordinateur : liste à gauche, plan à droite */
             <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] items-start gap-4">
               <section className={card}>
                 {countLine}
@@ -253,7 +226,7 @@ export default function Home() {
                       onMouseLeave={() => setActiveRestaurant(null)}
                       className={activeRestaurant === plat.restaurant.id ? 'bg-accent-soft' : ''}
                     >
-                      <Link to="/plats/$platId" params={{ platId: plat.id }} onClick={trackOpen} className="block no-underline">
+                      <Link to="/plats/$platId" params={{ platId: plat.id }} className="block no-underline">
                         <PlatsCard plat={plat} showDistance={gpsActive} />
                       </Link>
                     </li>

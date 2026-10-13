@@ -97,7 +97,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
           "Compte : numéro de portable (identifiant et SMS de service), mot de passe (conservé uniquement sous forme d'empreinte chiffrée, jamais en clair).",
           "Établissement : SIRET, nom, adresse et quartier (l'adresse provient de l'annuaire public des entreprises), jours d'ouverture, formule choisie.",
           "Facturation : nom ou raison sociale, adresse de facturation, e-mail. Les données de carte bancaire sont saisies et conservées par notre prestataire de paiement Stripe : Plats du Jour n'y a jamais accès.",
-          "Contenus : plats, menus et prix publiés ; photos d'ardoise transmises à un service d'intelligence artificielle pour en extraire le texte (formule Menu + IA).",
+          "Contenus : plats et prix publiés.",
           'Équipe : numéros de portable des membres ajoutés par le propriétaire.',
           'Suivi : régularité des publications, SMS et e-mails envoyés, motif de résiliation si vous le précisez.',
         ],
@@ -121,7 +121,6 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
           "Mesure d'audience : Umami (Umami Software, Inc.), statistiques anonymes sans cookie [à compléter : à vérifier, localisation des serveurs].",
           'Envoi des SMS : [à compléter : prestataire].',
           'Envoi des e-mails : [à compléter : prestataire].',
-          "Lecture des photos d'ardoise : [à compléter : prestataire d'intelligence artificielle].",
           "Certains prestataires peuvent être situés hors de l'Union européenne ; les transferts sont alors encadrés par les clauses contractuelles types de la Commission européenne [à compléter : à vérifier pour chaque prestataire].",
           'Les plats, prix, nom et adresse de votre établissement sont, par nature, publics.',
         ],
@@ -177,8 +176,7 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
         title: '3. Formules et prix',
         paragraphs: [
           `${PLANS.plat.name} : un plat par jour — ${price('plat')}.`,
-          `${PLANS.menu.name} : suggestions du jour (entrée, plat, dessert, formule) — ${price('menu')}.`,
-          `${PLANS.ia.name} : formule Menu avec saisie automatique à partir d'une photo de l'ardoise — ${price('ia')}.`,
+          `${PLANS.menu.name} : l'ardoise des plats du jour, plusieurs plats par jour (plats uniquement) — ${price('menu')}.`,
           "Les prix sont exprimés hors taxes ; la TVA en vigueur s'y ajoute. La formule peut être changée à tout moment depuis l'espace pro ; le nouveau prix s'applique [à compléter : à partir du prochain prélèvement / au prorata].",
         ],
       },
@@ -211,7 +209,6 @@ export const LEGAL_DOCS: Record<LegalDocId, LegalDoc> = {
         paragraphs: [
           "L'établissement est seul responsable des plats, prix et informations qu'il publie : ils doivent être exacts, à jour et conformes à la réglementation, notamment en matière d'information sur les allergènes et de prix affichés.",
           "L'établissement accorde à Plats du Jour, pour la durée de l'abonnement et [à compléter : durée après résiliation], une autorisation gratuite et non exclusive de reproduire et diffuser ses contenus (plats, prix, nom, photos) sur le site, l'application et les supports de communication de Plats du Jour, y compris les réseaux sociaux.",
-          "Avec la formule Menu + IA, les lignes remplies à partir d'une photo doivent être vérifiées par l'établissement avant publication.",
         ],
       },
       {

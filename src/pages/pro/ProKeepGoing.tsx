@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { Camera, Copy, Eye, Heart, Megaphone, RotateCcw, TrendingUp, UtensilsCrossed } from 'lucide-react';
+import { Copy, Eye, Heart, Megaphone, RotateCcw, TrendingUp, UtensilsCrossed } from 'lucide-react';
 import Header from '@/components/Header';
 import { proStore, useProDb } from '@/lib/proStore';
 import { pageMain } from '@/components/layout';
@@ -30,7 +30,6 @@ const reasons = [
 const tools = [
   { icon: Copy, text: 'Saisissez toute la semaine en une fois' },
   { icon: RotateCcw, text: 'Reprenez vos plats récents en un clic' },
-  { icon: Camera, text: 'Avec Menu + IA, prenez simplement votre ardoise en photo' },
 ];
 
 /**

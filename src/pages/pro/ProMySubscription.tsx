@@ -100,7 +100,7 @@ export default function ProMySubscription() {
               {!canceled && (
                 <>
                   <p className="mb-2 mt-4 text-[13px] font-medium text-foreground">Changer de formule</p>
-                  <div role="radiogroup" aria-label="Changer de formule" className="grid grid-cols-3 gap-2">
+                  <div role="radiogroup" aria-label="Changer de formule" className="grid grid-cols-2 gap-2">
                     {PLAN_IDS.map((id) => {
                       const active = restaurant.plan === id;
                       return (

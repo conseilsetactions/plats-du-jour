@@ -9,7 +9,7 @@ import { pageMain } from '@/components/layout';
 const faq: { q: string; a: string }[] = [
   {
     q: 'Combien ça coûte ?',
-    a: `Les ${FREE_MONTHS} premiers mois sont gratuits, quelle que soit la formule. Ensuite : ${PLANS.plat.name} ${PLANS.plat.price} € HT/mois, ${PLANS.menu.name} ${PLANS.menu.price} € HT/mois, ${PLANS.ia.name} ${PLANS.ia.price} € HT/mois`,
+    a: `Les ${FREE_MONTHS} premiers mois sont gratuits, quelle que soit la formule. Ensuite : ${PLANS.plat.name} ${PLANS.plat.price} € HT/mois, ${PLANS.menu.name} ${PLANS.menu.price} € HT/mois`,
   },
   {
     q: 'Pourquoi enregistrer ma carte bancaire dès l’inscription ?',
@@ -37,7 +37,7 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: 'Quelle est la différence entre les formules ?',
-    a: `${PLANS.plat.name} : un plat par jour. ${PLANS.menu.name} : vos suggestions du jour (entrée, plat, dessert, formule). ${PLANS.ia.name} : comme la formule Menu, mais vous prenez votre ardoise en photo et l'IA remplit les lignes, que vous pouvez corriger avant de publier`,
+    a: `${PLANS.plat.name} : un plat par jour. ${PLANS.menu.name} : votre ardoise, avec tous vos plats du jour (plats uniquement, pas d'entrées ni de desserts)`,
   },
   {
     q: 'Puis-je changer de formule ?',

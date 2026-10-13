@@ -1,11 +1,11 @@
-import { Check, Sparkles } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { FREE_MONTHS, PLAN_IDS, PLANS, type PlanId } from '@/lib/plans';
 
 interface PlanCardsProps {
   selected?: PlanId;
   /** Sans `onSelect`, les cartes sont simplement informatives. */
   onSelect?: (plan: PlanId) => void;
-  /** Sur ordinateur, les trois formules côte à côte. */
+  /** Sur ordinateur, les formules côte à côte. */
   columns?: boolean;
 }
 
@@ -16,7 +16,7 @@ export default function PlanCards({ selected, onSelect, columns = false }: PlanC
     <div
       role={selectable ? 'radiogroup' : 'list'}
       aria-label="Formules"
-      className={`space-y-2 ${columns ? 'lg:grid lg:grid-cols-3 lg:gap-4 lg:space-y-0' : ''}`}
+      className={`space-y-2 ${columns ? 'lg:mx-auto lg:grid lg:max-w-3xl lg:grid-cols-2 lg:gap-4 lg:space-y-0' : ''}`}
     >
       {PLAN_IDS.map((id) => {
         const { name, price, tagline, features } = PLANS[id];
@@ -37,7 +37,6 @@ export default function PlanCards({ selected, onSelect, columns = false }: PlanC
             <span className="min-w-0">
               <span className={`flex items-center gap-1 text-sm font-semibold ${active ? 'text-accent' : 'text-foreground'}`}>
                 {name}
-                {id === 'ia' && <Sparkles className="h-3.5 w-3.5 text-accent" />}
               </span>
               <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">{tagline}</span>
               <span className="mt-1.5 block space-y-0.5">

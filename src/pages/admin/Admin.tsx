@@ -21,7 +21,6 @@ import ActivitySection from '@/pages/admin/ActivitySection';
 import { getActivity, type Activity as ActivityData } from '@/lib/activity';
 import { getAbEvents, resetAbTest, VARIANTS, type Variant } from '@/lib/abtest';
 import { FUNNEL_STEPS, getFunnelEvents, resetFunnel } from '@/lib/funnel';
-import { getListEvents, LIST_VARIANTS, resetListAbTest, type ListVariant } from '@/lib/listAbtest';
 import { getBillingState } from '@/lib/billing';
 import { useNow } from '@/lib/clock';
 import { PLAN_IDS, PLANS } from '@/lib/plans';
@@ -314,7 +313,6 @@ export default function Admin() {
               <PlansBreakdown rows={live} />
               <FunnelSection />
               <AbTestSection />
-              <ListAbTestSection />
               <AlertsSection />
               <CancellationsSection rows={rows} />
             </div>
@@ -471,62 +469,6 @@ function FunnelSection() {
         <RotateCcw className="h-3 w-3" />
         Remettre à zéro
       </button>
-    </Section>
-  );
-}
-
-function ListAbTestSection() {
-  const [events, setEvents] = useState(getListEvents);
-  const stats = (['a', 'c'] as ListVariant[]).map((variant) => {
-    const of = (type: string) => events.filter((e) => e.variant === variant && e.type === type).length;
-    return { variant, views: of('view'), clicks: of('plat_click') };
-  });
-
-  return (
-    <Section icon={FlaskConical} title="A/B test de la liste des plats (ordinateur)">
-      <table className="w-full text-xs">
-        <thead className="text-left text-subtle">
-          <tr>
-            <th className="pb-1.5 font-semibold">Version</th>
-            <th className="pb-1.5 text-right font-semibold">Vues</th>
-            <th className="pb-1.5 text-right font-semibold">Plats ouverts</th>
-            <th className="pb-1.5 text-right font-semibold">Taux</th>
-          </tr>
-        </thead>
-        <tbody>
-          {stats.map(({ variant, views, clicks }) => (
-            <tr key={variant} className="border-t border-border">
-              <td className="py-1.5 pr-2 font-medium text-foreground">{LIST_VARIANTS[variant]}</td>
-              <td className="py-1.5 text-right">{views}</td>
-              <td className="py-1.5 text-right">{clicks}</td>
-              <td className="py-1.5 text-right font-semibold text-accent-strong">{percent(clicks, views)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className="mt-2 text-[11px] text-muted-foreground">
-        Seuls les visiteurs sur ordinateur avec le GPS activé participent (sans GPS, le plan est toujours affiché).
-        Taux = plats ouverts ÷ vues
-      </p>
-      <div className="mt-3 flex flex-wrap gap-2 text-xs">
-        <a href="/?liste=a" className="rounded border border-input px-2.5 py-1.5 text-foreground no-underline hover:border-accent">
-          Version A
-        </a>
-        <a href="/?liste=c" className="rounded border border-input px-2.5 py-1.5 text-foreground no-underline hover:border-accent">
-          Version C
-        </a>
-        <button
-          onClick={() => {
-            if (!window.confirm("Remettre à zéro les mesures de l'A/B test de la liste ?")) return;
-            resetListAbTest();
-            setEvents([]);
-          }}
-          className="inline-flex items-center gap-1 rounded border border-input px-2.5 py-1.5 text-foreground hover:border-accent"
-        >
-          <RotateCcw className="h-3 w-3" />
-          Remettre à zéro
-        </button>
-      </div>
     </Section>
   );
 }
