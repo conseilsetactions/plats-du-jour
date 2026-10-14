@@ -135,10 +135,12 @@ export function OpenDaysForm({
   restaurant,
   onDone,
   onCancel,
+  submitLabel = 'Enregistrer',
 }: {
   restaurant: RestaurantProfile;
   onDone: () => void;
   onCancel?: () => void;
+  submitLabel?: string;
 }) {
   const {
     register,
@@ -155,7 +157,7 @@ export function OpenDaysForm({
       noValidate
       className="space-y-4"
       onSubmit={handleSubmit(({ openDays }) => {
-        proStore.updateRestaurant({ openDays: toOpenDays(openDays) });
+        proStore.updateRestaurant({ openDays: toOpenDays(openDays), openDaysConfirmedAt: new Date().toISOString() });
         onDone();
       })}
     >
@@ -170,7 +172,7 @@ export function OpenDaysForm({
           </button>
         )}
         <button type="submit" className={`${primaryButton} flex-1`}>
-          Enregistrer
+          {submitLabel}
         </button>
       </div>
     </form>
@@ -281,10 +283,13 @@ function DetailsFields({
         </p>
       </div>
 
-      <fieldset>
-        <legend className={labelClass}>Jours d'ouverture le midi</legend>
-        <OpenDaysGrid checkedDays={checkedDays} inputProps={register('openDays')} error={errors.openDays?.message} />
-      </fieldset>
+      {/* Inscription : pas de jours d'ouverture ici, ils sont proposés à la 1re saisie des plats */}
+      {!requireCertification && (
+        <fieldset>
+          <legend className={labelClass}>Jours d'ouverture le midi</legend>
+          <OpenDaysGrid checkedDays={checkedDays} inputProps={register('openDays')} error={errors.openDays?.message} />
+        </fieldset>
+      )}
 
       {requireCertification && (
         <div>
@@ -515,7 +520,15 @@ export function EditRestaurantForm({
       submitLabel="Enregistrer"
       onCancel={onCancel}
       onSubmit={({ name, street, postalCode, city: chosenCity, quartier, openDays }) => {
-        proStore.updateRestaurant({ name, street, postalCode, city: chosenCity, quartier, openDays: toOpenDays(openDays) });
+        proStore.updateRestaurant({
+          name,
+          street,
+          postalCode,
+          city: chosenCity,
+          quartier,
+          openDays: toOpenDays(openDays),
+          openDaysConfirmedAt: new Date().toISOString(),
+        });
         onDone();
       }}
     />

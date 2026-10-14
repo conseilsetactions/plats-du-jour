@@ -144,7 +144,7 @@ function DayRows({
             <div className="grid grid-cols-[1fr_72px_28px] items-center gap-1.5">
               <input
                 aria-label={`Plat ${j + 1}, ${dayLabel}`}
-                placeholder="Nom du plat"
+                placeholder={`Plat ${j + 1}`}
                 list="recent-plats"
                 autoComplete="off"
                 aria-invalid={!!itemErrors?.name}
@@ -181,7 +181,7 @@ function DayRows({
       <button
         type="button"
         onClick={() => append(emptyItem())}
-        className="flex items-center gap-1 pt-1 text-[13px] font-medium text-accent"
+        className="flex w-full items-center justify-center gap-1 rounded-md border border-dashed border-accent/50 py-2 text-[13px] font-medium text-accent hover:border-accent hover:bg-accent-soft"
       >
         <Plus className="h-4 w-4" />
         Ajouter un plat

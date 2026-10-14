@@ -25,6 +25,7 @@ export interface RestaurantProfile {
   location: Location;
   certifiedAt: string; // date de la certification « propriétaire ou représentant »
   openDays?: number[]; // jours d'ouverture le midi (1 = lundi … 5 = vendredi) ; absent = tous
+  openDaysConfirmedAt?: string; // jours d'ouverture vérifiés par le pro (proposés à la 1re saisie des plats)
 }
 
 export interface Invitation {
@@ -406,7 +407,7 @@ export const proStore = {
   },
 
   updateRestaurant: (
-    changes: Partial<Pick<RestaurantProfile, 'name' | 'street' | 'postalCode' | 'city' | 'quartier' | 'openDays'>>
+    changes: Partial<Pick<RestaurantProfile, 'name' | 'street' | 'postalCode' | 'city' | 'quartier' | 'openDays' | 'openDaysConfirmedAt'>>
   ) =>
     write((db) => updateRestaurant(db, (r) => ({ ...r, ...changes }))),
 
@@ -519,6 +520,7 @@ export const proStore = {
         next.restaurants[id] = {
           id,
           googlePlaceId: `demo-seed-${i + 1}`,
+          openDaysConfirmedAt: signup.toISOString(),
           rating: 4 + ((i * 3) % 8) / 10,
           ratingCount: 40 + i * 37,
           name,

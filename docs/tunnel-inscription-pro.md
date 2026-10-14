@@ -1,6 +1,6 @@
 # Tunnel de création d'un compte pro — Plats du Jour
 
-**Mis à jour :** 2026-10-13 (inscription sans SIRET, établissement choisi sur Google Maps, 2 formules)
+**Mis à jour :** 2026-10-14 (jours d'ouverture retirés de l'inscription, demandés à la 1re saisie des plats)
 
 ```mermaid
 flowchart TD
@@ -35,7 +35,7 @@ flowchart TD
         R -->|déjà inscrit| X3[« Demandez au propriétaire<br/>de vous ajouter à son équipe »]
         R -->|choix| Q{Est-ce bien votre<br/>établissement ?}
         Q -->|Non| S
-        Q -->|Oui, c'est bien moi| D[Nom et adresse modifiables<br/>Quartier, note, position : Google<br/>Jours d'ouverture<br/>Certification propriétaire]
+        Q -->|Oui, c'est bien moi| D[Nom et adresse modifiables<br/>Quartier, note, position : Google<br/>Certification propriétaire]
     end
 
     D -->|Continuer| I
@@ -47,18 +47,26 @@ flowchart TD
     end
 
     ST --> W([Bienvenue / Bien démarrer<br/>inscription terminée])
-    W -->|Publier mes plats quand je veux| PL([Mes plats du jour de la semaine])
+    W -->|Publier mes plats quand je veux| OD
+
+    subgraph S1 [1re saisie des plats]
+        OD[Quels jours servez-vous le midi ?<br/>lundi à vendredi, ouvert / fermé]
+        OD -->|C'est bon, je saisis mes plats| PL{Formule choisie}
+        PL -->|Plat du jour| P1([1 plat par jour])
+        PL -->|Formule| P2([Mon ardoise de la semaine<br/>plusieurs plats par jour])
+    end
 
     classDef step fill:#fbefea,stroke:#d97757,color:#1a1a1a
     classDef stop fill:#fdecea,stroke:#c62828,color:#1a1a1a
     classDef ok fill:#e8f5e9,stroke:#2e7d32,color:#1a1a1a
     class F,P,C,M,S,R,D,I,B,ST step
     class X1,X2,X3 stop
-    class W,PL ok
+    class OD step
+    class W,P1,P2 ok
 ```
 
 **À savoir**
 - Chaque étape est mesurée (Umami : `inscription-formule` … `inscription-termine`) pour suivre les abandons
 - Un restaurateur qui s'arrête en cours de route (après l'étape 3) reprend là où il en était en se reconnectant (menu « Inscription en cours » → « Reprendre mon inscription »)
-- Aucun plat n'est demandé pendant l'inscription : il publie quand il veut, depuis « Mes plats du jour »
+- Aucun plat ni jour d'ouverture n'est demandé pendant l'inscription : les jours d'ouverture sont vérifiés au moment de la 1re saisie des plats, puis modifiables à tout moment
 - En démo : pas de vrai SMS (le code s'affiche), pas de vrai Stripe, établissements Google fictifs (« test »)

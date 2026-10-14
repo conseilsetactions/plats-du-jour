@@ -6,7 +6,7 @@ import MenuWeekForm from '@/components/pro/MenuWeekForm';
 import ReminderPhonePicker from '@/components/pro/ReminderPhonePicker';
 import { primaryButton, secondaryButton } from '@/components/pro/ui';
 import SignupSteps from '@/components/pro/SignupSteps';
-import { CreateRestaurantForm } from '@/components/pro/RestaurantForm';
+import { CreateRestaurantForm, OpenDaysForm } from '@/components/pro/RestaurantForm';
 import WeekForm, { type WeekDay, type WeekFormProps } from '@/components/pro/WeekForm';
 import { getLastVisibleDay } from '@/lib/billing';
 import { getPublishableDays, useNow } from '@/lib/clock';
@@ -175,30 +175,42 @@ export default function ProDashboard() {
         </section>
       )}
 
-      {/* Publication de la semaine */}
-      <section className="px-4 py-5">
-        <h1 className="text-xl font-bold text-foreground">
-          Mes plats du jour de la semaine
-        </h1>
-        <p className="mt-0.5 text-[13px] text-muted-foreground">
-          {isMenuPlan(plan)
-            ? 'Votre ardoise : tous vos plats du jour, du lundi au vendredi'
-            : 'Un plat par jour, du lundi au vendredi'}
-        </p>
-        {plan === 'plat' && hasMultipleLines && (
-          <p className="mt-2 text-xs text-accent-strong">
-            Formule Plat du jour : seule la première ligne de chaque jour est affichée aux clients
+      {/* 1re saisie : on vérifie d'abord les jours d'ouverture (retirés de l'inscription) */}
+      {!restaurant.openDaysConfirmedAt ? (
+        <section className="px-4 py-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-accent-strong">Avant votre première saisie</p>
+          <h1 className="mt-1 text-xl font-bold text-foreground">Quels jours servez-vous le midi ?</h1>
+          <p className="mb-4 mt-1 text-[13px] text-muted-foreground">Vérifiez-les une fois, vous pourrez les changer à tout moment</p>
+          <OpenDaysForm restaurant={restaurant} onDone={() => {}} submitLabel="C'est bon, je saisis mes plats" />
+        </section>
+      ) : (
+        <>
+        {/* Publication de la semaine */}
+        <section className="px-4 py-5">
+          <h1 className="text-xl font-bold text-foreground">
+            {isMenuPlan(plan) ? 'Mon ardoise de la semaine' : 'Mes plats du jour de la semaine'}
+          </h1>
+          <p className="mt-0.5 text-[13px] text-muted-foreground">
+            {isMenuPlan(plan)
+              ? 'Formule : ajoutez tous les plats du jour que vous servez, jour par jour. Les clients les verront tous'
+              : 'Formule Plat du jour : un plat par jour, du lundi au vendredi'}
           </p>
-        )}
-
-        <div className="mt-4">
-          {isMenuPlan(plan) ? (
-            <MenuWeekForm days={days} suggestions={recentNames} onSave={save} />
-          ) : (
-            <WeekForm days={days} suggestions={recentNames} onSave={save} />
+          {plan === 'plat' && hasMultipleLines && (
+            <p className="mt-2 text-xs text-accent-strong">
+              Formule Plat du jour : seule la première ligne de chaque jour est affichée aux clients
+            </p>
           )}
-        </div>
-      </section>
+
+          <div className="mt-4">
+            {isMenuPlan(plan) ? (
+              <MenuWeekForm days={days} suggestions={recentNames} onSave={save} />
+            ) : (
+              <WeekForm days={days} suggestions={recentNames} onSave={save} />
+            )}
+          </div>
+        </section>
+        </>
+      )}
     </Shell>
   );
 }
