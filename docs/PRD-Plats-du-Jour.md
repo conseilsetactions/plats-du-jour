@@ -4,13 +4,23 @@
 
 | Version | Date | Statut |
 |---|---|---|
-| **2.0** (actuelle) | 2026-10-07 | MVP en démonstration |
+| **3.0** (actuelle) | 2026-10-14 | MVP en démonstration en ligne (Vercel) |
 
 ---
 
 ## Historique des versions
 
 *Règle : on change le 1er chiffre (2.0 → 3.0) pour un changement de fond (modèle économique, parcours principal), le 2e (2.0 → 2.1) pour un ajout ou une précision. Chaque version liste ce qui a changé*
+
+### v3.0 — 2026-10-14
+- **Formules :** deux seulement, Plat du jour 5 € HT (une ligne) et Formule 7 € HT (ardoise de plusieurs plats, plats uniquement) ; formule Menu + IA supprimée
+- **Inscription sans SIRET :** l'établissement est choisi sur Google Maps (« Est-ce bien votre établissement ? ») ; nom et adresse modifiables, note, position et quartier repris de Google
+- **Inscription allégée :** jours d'ouverture demandés à la 1re saisie des plats ; écran « Comprendre les 6 mois gratuits » avant la carte ; étape 5 renommée « Activation (0 €) » ; e-mail et SIRET de facturation facultatifs ; fin sur une page de bienvenue
+- **SMS :** rappel une seule fois par semaine (1er jour d'ouverture) au lieu de chaque jour
+- **Clients :** liste toujours avec le plan sur ordinateur (fin de l'A/B test A / C) ; fiche plat en version ordinateur avec les autres plats du jour de l'établissement
+- **Connexion pro :** déconnexion après 30 jours sans visite ; jours fériés laissés libres
+- **Technique :** PWA installable, mise en ligne Vercel avec mode démo, mesure Umami (tunnel d'inscription, A/B test page pro)
+- **Planning :** campagne Joliette décalée jusqu'au branchement du vrai backend, des SMS et de Stripe
 
 ### v2.0 — 2026-10-07
 - Modèle économique : formules 5 / 7 / 9 € HT/mois (Plat du jour, Menu, Menu + IA), 6 mois gratuits, sans commission ; abandon du freemium avec publicité
@@ -65,15 +75,15 @@
 
 | Formule | Prix | Contenu |
 |---|---|---|
-| Plat du jour | 5 € HT/mois | 1 plat par jour |
-| Menu | 7 € HT/mois | Suggestions du jour (entrée, plat, dessert, formule), lignes illimitées |
-| Menu + IA | 9 € HT/mois | Menu rempli à partir d'une photo de l'ardoise, modifiable avant publication |
+| Plat du jour | 5 € HT/mois | 1 plat par jour, une seule ligne à saisir |
+| Formule | 7 € HT/mois | L'ardoise : plusieurs plats du jour par jour (plats uniquement, pas d'entrées ni de desserts) |
 
 - Affichage : « Gratuit pendant 6 mois, puis X € HT/mois »
 - Carte bancaire enregistrée à l'inscription (Stripe), 1er prélèvement à la fin des 6 mois
+- La formule IA (photo de l'ardoise) est retirée pour l'instant
 - Formule modifiable à tout moment, résiliation sans frais
 
-*Remplace le modèle freemium d'origine (7,90 € / 9,90 € HT, publicité côté clients)*
+*Remplace le modèle freemium d'origine (v1) puis les 3 formules de la v2 (5 / 7 / 9 € HT)*
 
 ---
 
@@ -84,7 +94,7 @@
 **Horaires d'affichage**
 - Plats visibles du lundi au vendredi, de 11h à 14h (heure de Marseille)
 - Messages dédiés : avant 11h, après 14h, le week-end (dès le vendredi 14h)
-- Jours fériés : non gérés pour l'instant
+- Jours fériés : rien de bloqué, l'établissement publie s'il le souhaite
 
 **Choix de la zone (sous forme de phrase)**
 - « Aujourd'hui, [jour] — Voir les plats du jour de [ville ▾] dans le quartier [quartier ▾] ou [utiliser ma position GPS] »
@@ -102,7 +112,8 @@
 - Filtres remis à « Tous » à chaque visite
 
 **Affichage d'un plat dans la liste**
-- Nom, catégorie (formules Menu), prix, établissement, note Google, distance et temps de marche (GPS)
+- Nom, prix, établissement, note Google (de sa fiche Google), distance et temps de marche (GPS)
+- Tout ce que l'établissement propose aujourd'hui : un plat (Plat du jour) ou toute son ardoise (Formule)
 - Tri : les plus proches d'abord
 
 **Rien à afficher** (horaires, pas de zone, aucun résultat) : présentation grand public
@@ -110,18 +121,17 @@
 
 **Mention :** Plats du Jour affiche uniquement les plats saisis par les établissements participants et ne garantit pas les quantités disponibles
 
-### 5.2 Version ordinateur et A/B test
+### 5.2 Version ordinateur
 
-- Barre de zone et de filtres en haut, toute la largeur pour les plats
-- **A/B test en cours :**
-  - A « Ardoise » : tableau Plat · Établissement · À pied · Note Google · Prix
-  - C « Liste et plan » : liste à gauche, plan OpenStreetMap à droite (un repère par établissement avec son prix, « Vous êtes ici », bulle avec les plats)
-- Seuls les visiteurs avec GPS participent ; sans GPS, toujours la version C
-- Mesures : vues et plats ouverts par version (admin) ; forçage `?liste=a` / `?liste=c`
+- Barre de zone et de filtres en haut
+- **Toujours la liste à gauche et le plan à droite**, avec ou sans GPS : plan OpenStreetMap, un repère par établissement avec son prix (« dès … » s'il propose plusieurs plats), « Vous êtes ici » avec le GPS, bulle avec les plats
+- *L'A/B test « tableau » contre « liste + plan » de la v2 est arrêté : le plan est retenu*
 
 ### 5.3 Fiche plat (`/plats/:id`)
-- Nom, prix, catégorie, établissement, note Google, adresse, distance (GPS)
+- Nom, prix, établissement, note Google, adresse, distance et temps de marche (GPS)
 - Bouton « Voir sur Google Maps » (recherche nom + adresse)
+- « Aussi aujourd'hui chez … » : les autres plats du jour du même établissement
+- Ordinateur : informations à gauche, plan à droite
 
 ### 5.4 Pages institutionnelles
 - Qui sommes-nous (`/qui-sommes-nous`)
@@ -144,40 +154,54 @@
 1. **Formule**
 2. **Portable** + acceptation des CGV et de la politique de confidentialité + code de vérification par SMS
 3. **Mot de passe** : 4 chiffres
-4. **Établissement** : SIRET vérifié (API publique Recherche d'entreprises : établissement actif, ville couverte, SIRET unique), nom et adresse pré-remplis, ville (Marseille par défaut), quartier, jours d'ouverture, certification « propriétaire ou représentant légal »
-5. **Paiement** : carte enregistrée chez Stripe, 0 € aujourd'hui, frise des dates, informations de facturation
+4. **Établissement** (sans SIRET) :
+   - recherche de l'établissement sur **Google Maps** par son nom
+   - « **Est-ce bien votre établissement ?** » (oui / chercher à nouveau)
+   - nom et adresse pré-remplis et **modifiables** ; note, nombre d'avis, position et quartier **repris de Google**, non modifiables
+   - zone couverte vérifiée, **un seul compte par fiche Google** (sinon : « demandez au propriétaire de vous ajouter à son équipe »)
+   - certification « propriétaire ou représentant légal »
+5. **Activation (0 €)** :
+   - écran « **Comprendre les 6 mois gratuits** » : pourquoi 6 mois, résultats en général après environ 3 mois, pourquoi la carte maintenant, ce qui se passe après 6 mois
+   - informations de facturation (**e-mail et SIRET facultatifs**), carte enregistrée chez Stripe, 0 € aujourd'hui
 
-Pas de validation manuelle des établissements
+**Fin du tunnel :** page de bienvenue « Bien démarrer » (« inscription terminée »). **Aucun plat ni jour d'ouverture n'est demandé pendant l'inscription.**
+
+Pas de validation manuelle des établissements. Un restaurateur qui s'arrête en cours de route reprend là où il en était en se reconnectant. Diagramme du parcours : `docs/tunnel-inscription-pro.md`
+
+**Mesure du tunnel :** chaque étape est comptée (Umami et admin), objectif **moins de 15 % d'abandon** à l'étape Activation
 
 ### 6.3 Connexion
 - Portable + mot de passe à 4 chiffres
 - Blocage 15 minutes après 5 essais ratés
 - Mot de passe oublié : code par SMS
+- Reste connecté tant qu'il revient au moins une fois tous les **30 jours**
 
-### 6.4 Publication (« Mes plats du jour de la semaine »)
+### 6.4 Publication
+- **1re saisie :** « Quels jours servez-vous le midi ? » (lundi à vendredi), puis la semaine
 - Saisie de toute la semaine en une fois, bouton « Valider »
-- Formule Plat du jour : 1 plat par jour ; formules Menu : lignes catégorie + nom + prix
-- Menu + IA : photo de l'ardoise, lignes remplies puis vérifiées
+- **Plat du jour** (« Mes plats du jour de la semaine ») : 1 plat par jour (nom + prix)
+- **Formule** (« Mon ardoise de la semaine ») : plusieurs plats par jour (nom + prix), bouton « Ajouter un plat »
 - Publication du jour même jusqu'à 14h ; dès le vendredi 14h et le week-end, semaine suivante
 - Suggestions des plats déjà servis
-- Jours d'ouverture (lundi à vendredi) : jour fermé grisé, sans saisie ni rappel ; lien « Modifier » avec retour automatique sur la saisie
+- Jours d'ouverture : jour fermé grisé, sans saisie ni rappel ; lien « Modifier » avec retour automatique sur la saisie
+- Jours fériés : l'établissement publie librement s'il est ouvert
 
 ### 6.5 Rôles
 | | Propriétaire | Membre de l'équipe |
 |---|---|---|
 | Plats du jour | ✓ | ✓ |
 | Jours d'ouverture | ✓ | ✓ |
-| Établissement (nom, ville, quartier) | ✓ | — |
+| Établissement (nom, adresse) | ✓ | — |
 | Abonnement, factures, équipe | ✓ | — |
 
 ### 6.6 Équipe
 - Le propriétaire ajoute des portables : invitation par SMS (lien court `/i/:code`), le membre choisit son mot de passe
 - À partir de la 2e connexion du propriétaire : « Vous n'êtes pas seul en cuisine ? » (2 « Plus tard » maximum)
-- Un seul numéro reçoit le SMS de rappel quotidien, choisi parmi propriétaire et membres (notification tant qu'il n'est pas choisi)
+- Un seul numéro reçoit le SMS de rappel de la semaine, choisi parmi propriétaire et membres (notification tant qu'il n'est pas choisi)
 
 ### 6.7 Abonnement, factures, résiliation
 - **Mon abonnement :** formule (changement immédiat), carte (portail Stripe), facturation
-- **Mes factures :** liste et facture détaillée ; envoi mensuel par e-mail par Stripe
+- **Mes factures :** liste et facture détaillée ; envoi mensuel par e-mail par Stripe si un e-mail est renseigné (sinon disponibles dans l'espace) ; SIRET du client affiché s'il est renseigné
 - **Résiliation (page dédiée `/pro/resiliation`) :** 1. pourquoi (raison facultative, alternative proposée) 2. comment ça se passe 3. confirmation
   - Aucun prélèvement ; publication et visibilité jusqu'à la veille de l'échéance incluse ; compte et factures conservés ; réactivation en un clic
   - E-mail de confirmation au propriétaire + alerte à l'administrateur
@@ -190,10 +214,10 @@ Pas de validation manuelle des établissements
 
 | Canal | Message | Déclencheur |
 |---|---|---|
-| SMS | Code d'inscription | Étape 2 de l'inscription |
+| SMS | Code d'inscription (« bienvenue ! ») | Étape 2 de l'inscription |
 | SMS | Code « mot de passe oublié » | Demande de l'utilisateur |
 | SMS | Invitation d'un membre | Ajout par le propriétaire |
-| SMS | Rappel quotidien (ton selon la régularité) | Jours d'ouverture à 10h30, seulement si le plat n'est pas publié |
+| SMS | Rappel de la semaine (ton selon la régularité) | **Une fois par semaine**, le 1er jour d'ouverture à 10h30, seulement si le plat n'est pas publié |
 | E-mail | Félicitations | Vendredi 15h, meilleurs publiants |
 | E-mail | Fin de la période gratuite | 7 jours avant le 1er prélèvement |
 | E-mail | Facture mensuelle | Après chaque prélèvement (Stripe) |
@@ -204,7 +228,7 @@ Pas de validation manuelle des établissements
 
 ## 8. Administration (`/admin`)
 
-- Ordinateur : chiffres clés, suivi des publications sur 4 semaines (meilleurs / réguliers / à relancer / nouveaux), relances, A/B test de la page pro, A/B test de la liste, alertes, résiliations, liste des établissements avec coordonnées
+- Ordinateur : chiffres clés, suivi des publications sur 4 semaines (meilleurs / réguliers / à relancer / nouveaux), relances, tunnel d'inscription (pertes par étape, abandon à l'activation), A/B test de la page pro, alertes, résiliations, liste des établissements avec coordonnées
 - Téléphone : 4 chiffres clés, établissements à relancer (bouton Appeler), liste avec recherche
 - « Voir en tant que » : consulter l'espace d'un établissement (bandeau « Vue admin »)
 
@@ -229,11 +253,11 @@ Pas de validation manuelle des établissements
 
 ## 10. Données (modèle actuel, simulé)
 
-- **Établissement :** SIRET, nom, adresse, ville, quartier, position, jours d'ouverture, date de certification, formule, propriétaire, membres, invitations, numéro de rappel, abonnement
-- **Abonnement :** statut (essai / résilié), date de fin d'essai, carte enregistrée, résiliation (date, raison, commentaire), coordonnées de facturation
-- **Compte pro :** portable, empreinte du mot de passe, essais ratés, blocage, nombre de connexions, acceptation des conditions
-- **Plat publié :** établissement, date, catégorie, nom, prix
-- **Mesures :** événements des deux A/B tests ; historique des relances ; alertes admin
+- **Établissement :** identifiant de la fiche Google, note et nombre d'avis Google, lien vers la fiche, nom, adresse, ville, quartier, position, jours d'ouverture (et date de vérification), date de certification, formule, propriétaire, membres, invitations, numéro de rappel, abonnement
+- **Abonnement :** statut (essai / résilié), date de fin d'essai, carte enregistrée, résiliation (date, raison, commentaire), coordonnées de facturation (e-mail et SIRET facultatifs)
+- **Compte pro :** portable, empreinte du mot de passe, essais ratés, blocage, nombre de connexions, dernière visite, acceptation des conditions
+- **Plat publié :** établissement, date, nom, prix
+- **Mesures :** étapes du tunnel d'inscription, A/B test de la page pro ; historique des relances ; alertes admin
 - **Clients :** aucun compte ; quartier et position GPS conservés sur leur appareil
 
 ---
@@ -244,16 +268,16 @@ Pas de validation manuelle des établissements
 - **Routing :** TanStack Router · **Formulaires :** React Hook Form + Zod
 - **Carte :** Leaflet + tuiles OpenStreetMap
 - **PWA :** installable sur l'écran d'accueil
-- **Hébergement prévu :** Vercel
+- **Hébergement :** Vercel, republié automatiquement à chaque envoi sur GitHub ; mode démo activable (outils de test en ligne, site non référencé)
 - **Backend :** simulé dans le navigateur pour la démo ; Supabase envisagé
 - **Services externes :**
-  - API Recherche d'entreprises (SIRET, gratuite)
+  - **Google Maps Platform** (recherche de l'établissement à l'inscription, note Google) : clé à créer, quota gratuit mensuel
   - Stripe (abonnement, essai 6 mois, factures, portail client)
   - Prestataire SMS et prestataire e-mail (à choisir)
-  - IA de lecture de photo (à choisir)
-  - Google Maps (lien de recherche) ; Google Places reporté
+  - Umami (mesure d'audience sans cookie)
+  - Google Maps (lien « Voir sur Google Maps » sur la fiche plat)
 
-**Outils de démo (en local uniquement) :** heure simulée, GPS simulé (Joliette, Vieux-Port, hors zone), SIRET de test, établissements fictifs, remise à zéro
+**Outils de démo (en local et en ligne en mode démo) :** heure simulée, GPS simulé (Joliette, Vieux-Port, hors zone), établissements Google fictifs, établissements de démo, remise à zéro
 
 ---
 
@@ -270,7 +294,7 @@ Pas de validation manuelle des établissements
 - Chargement < 3 secondes ; trouver un plat en < 30 secondes
 - Adoption : nombre d'établissements actifs et **régularité de publication** (suivi sur 4 semaines dans l'admin)
 - Conversion de la page pro (A/B test A / B)
-- Plats ouverts par vue de la liste (A/B test A / C)
+- **Abandon à l'étape Activation < 15 %** et taux de complétion du tunnel d'inscription
 - Taux de résiliation et raisons
 
 ---
@@ -280,29 +304,31 @@ Pas de validation manuelle des établissements
 **Avant la mise en ligne**
 - Vrai backend (Supabase) ; vérification des mots de passe et limitation des essais côté serveur
 - Stripe en réel (abonnement avec essai de 6 mois, factures conformes, e-mails automatiques)
+- Clé Google Maps ; note Google rafraîchie régulièrement à partir de la fiche (conditions de Google)
 - Prestataires SMS et e-mail
 - Protection de l'admin et journalisation de « Voir en tant que »
 - Textes juridiques complétés et relus par un juriste ; émetteur des factures ; adresse e-mail admin
 - Adresses des réseaux sociaux
-- Outil de mesure réel pour les A/B tests
-- Mise en ligne (Vercel)
+- Couper le mode démo au vrai lancement
+- Campagne de recrutement Joliette (décalée jusqu'à ces points)
 
 **Ensuite**
 - QR code pour les habitués (promis sur la page pro B)
 - Publications ciblées par quartier sur les réseaux sociaux (promises sur la page pro B)
-- Google Places (vraie note Google, autocomplétion d'adresse)
+- Notifications gratuites (PWA) à la place de certains SMS
+- A/B test du tunnel (avec ou sans l'écran des 6 mois ; carte demandée plus tard)
+- Retour éventuel d'une formule IA (photo de l'ardoise)
 - Fournisseur de cartes si le trafic augmente (MapTiler, Stadia Maps)
 - Nouveaux quartiers et nouvelles villes
-- Jours fériés
 
-**Points à trancher :** durée de connexion des pros (proposition : 90 jours d'inactivité) ; résultat des A/B tests
+**Points à trancher :** promesses de la page pro B (QR code, réseaux sociaux) à construire ou à retirer ; résultats de l'A/B test de la page pro
 
 ---
 
 ## 15. Risques & Hypothèses
 
 **Hypothèse 1 :** les clients cherchent leur plat du jour sur leur téléphone le midi — *le service existe déjà en Estonie*  
-**Hypothèse 2 :** les établissements publieront régulièrement — *mitigation : 6 mois offerts, saisie de la semaine en une fois, rappel quotidien, équipe, e-mails de félicitations*  
+**Hypothèse 2 :** les établissements publieront régulièrement — *mitigation : 6 mois offerts, saisie de la semaine en une fois, rappel de la semaine, équipe, e-mails de félicitations*  
 **Hypothèse 3 :** un abonnement sans commission convaincra — *mitigation : A/B test des arguments, résiliation sans frais*  
 **Risque :** liste vide au lancement — *mitigation : présentation grand public quand rien n'est publié, quartiers pilotes*
 
@@ -310,13 +336,13 @@ Pas de validation manuelle des établissements
 
 ## 16. Notes importantes
 
-- Démo : SMS, e-mails, paiement et IA sont simulés ; aucune donnée n'est envoyée
+- Démo : SMS, e-mails et paiement sont simulés ; les comptes restent dans le navigateur ; sans clé Google, seuls des établissements fictifs sont trouvés
 - Géolocalisation : uniquement si le client l'active, conservée sur son appareil (RGPD)
 - Notes Google affichées avec la mention Google
 
 ---
 
-**Version :** 2.0  
-**Dernière mise à jour :** 2026-10-07  
+**Version :** 3.0  
+**Dernière mise à jour :** 2026-10-14  
 **Propriétaire :** Christine - C&A Conseils et Actions  
-**Statut :** MVP en démonstration — mise en ligne à préparer
+**Statut :** MVP en démonstration en ligne — vrai backend, SMS et Stripe à brancher avant la campagne
